@@ -1,0 +1,166 @@
+{
+  "navbar": {
+    "home": "Acasă",
+    "categories": "Categorii",
+    "lamps3d": "Lămpi 3D",
+    "lithophanes": "Poze Litografice",
+    "stringArt": "Tablouri cu Fire",
+    "diyCustomizer": "DIY Customizer",
+    "sculptureLamps": "Sculptură Lămpi",
+    "litho3d": "Litofanii 3D",
+    "cart": "Coș"
+  },
+  "footer": {
+    "desc": "Aducem idei digitale în realitate materială folosind o fermă proprie de zeci de imprimante 3D calibrate la viteză și perfectă precizie.",
+    "links": "Linkuri Utile",
+    "contact": "Contact",
+    "allRights": "Toate drepturile rezervate."
+  },
+  "hero": {
+    "title": "Printează 3D Ideile Tale",
+    "subtitle": "Transformă o poză, un desen sau un cadru creat de la 0 în plastic fizic",
+    "buttonCustomizer": "Deschide Customizer",
+    "buttonShop": "Vezi Magazin"
+  },
+  "home": {
+    "howItWorks": "Cum funcționează?",
+    "hw1_title": "Alegi Modelul",
+    "hw1_desc": "Selectezi din categoriile prestabilite sau folosești editorii procedurali pentru forme.",
+    "hw2_title": "Customizezi Live",
+    "hw2_desc": "Vizualizezi 3D modelul în spațiul propriului browser și ajustezi dimensiuni/texturi.",
+    "hw3_title": "De restul ne ocupăm noi",
+    "hw3_desc": "Comanda intră direct la roboți. Va sosi ambalată ecologic la tine la ușă.",
+    "catTitle1": "Categorii",
+    "catTitle2": "Principale",
+    "catDesc": "Alege din colecțiile noastre sau creează-ți propriul design",
+    "prodTitle1": "Produse",
+    "prodTitle2": "Recomandate",
+    "prodDesc": "Design care îmbină precizia digitală cu execuția fizică",
+    "whyTitle1": "De ce",
+    "whyTitle2": "Forge3D?",
+    "usp1": "Printare de Precizie",
+    "usp1_desc": "Folosim imprimante 3D de ultimă generație pentru detalii milimetrice perfecte.",
+    "usp2": "Personalizare Totală",
+    "usp2_desc": "Tool-ul nostru DIY îți permite să controlezi fiecare aspect al designului tău.",
+    "usp3": "Materiale Premium",
+    "usp3_desc": "Utilizăm doar polimeri de înaltă calitate, durabili și eco-friendly.",
+    "usp4": "Iluminare Inclusă",
+    "usp4_desc": "Produsele noastre vin gata de utilizat, cu surse de lumină led perfect adaptate."
+  },
+  "category": {
+    "back": "Înapoi",
+    "createOwn": "Creează-ți propria operă!",
+    "useCustomizer": "Folosește configuratorul nostru 3D pentru a personaliza acest produs exact cum îți dorești.",
+    "openCustomizer": "Deschide Customizer",
+    "productsTotal": "produse"
+  },
+  "product": {
+    "backToCategory": "Înapoi la categorie",
+    "diyAvailable": "Design DIY Disponibil",
+    "specs": "Specificații",
+    "quantity": "Cantitate",
+    "openConfigurator": "Deschide configuratorul",
+    "addToCart": "Adaugă în coș",
+    "added": "Adăugat!",
+    "outOfStock": "Produs indisponibil momentan."
+  },
+  "customizer": {
+    "exportStl": "Export STL",
+    "exportingStl": "Se randează STL...",
+    "estimatedTotal": "Total estimat:",
+    "saveAndBuy": "Salvează Design & Cumpără",
+    "engine": "ENGINE"
+  },
+  "cart": {
+    "title": "Coșul tău",
+    "empty": "Coșul tău este gol.",
+    "emptySub": "Se pare că nu ai adăugat încă niciun produs în coș.",
+    "backShop": "Înapoi la magazin",
+    "startShopping": "Continuă cumpărăturile",
+    "checkout": "Spre Finalizare",
+    "total": "Total",
+    "customConfig": "Configurație Custom",
+    "summary": "Sumar Comandă",
+    "subtotal": "Subtotal",
+    "delivery": "Livrare (estimat)",
+    "totalEst": "Total estimat",
+    "secureCheckout": "Plată 100% sigură. Finalizarea comenzii este simulată.",
+    "proceedCheckout": "Finalizează Comanda"
+  },
+  "data": {
+    "lampi": {
+      "desc": "Lămpi printate 3D procedural din filament translucid și PLA cu suport integrat de bec."
+    },
+    "lithophanes": {
+      "desc": "Fotografii prind viață sculptate în plastic. Strălucesc în funcție de grosimea lor atunci când ai o lumină în spate."
+    },
+    "stringArt": {
+      "desc": "Matematică împletită cu meșteșug. Tablouri circulare pe care curge doar o singură ață continuă așternută între cuie."
+    },
+    "itemDiyLampa": {
+      "name": "Lampă Parametrică DIY",
+      "desc": "Construiește-ți lampa de la zero, definind forma, structura striațiilor și alte date complexe în designerul 3D."
+    },
+    "itemLampaGeo": {
+      "name": "Lampă Geometrică - Honeycomb",
+      "desc": "Lampă printată dintr-un material ecologic flexibil, care emulează o structură organică moleculară."
+    },
+    "itemLampaTwist": {
+      "name": "Lampă Spirala Torsiunii",
+      "desc": "Formă curată, excelentă pentru becuri filament. Twist 180."
+    },
+    "itemDiyLitho": {
+      "name": "Lithophania Ta Personalizată",
+      "desc": "Încarcă o poză și noi prelucrăm nivelul fiecărui decibel de pixel, stivuim 3D și producem rama foto eternă a luminii."
+    },
+    "itemLithoPalt": {
+      "name": "Rama Foto Plat 15x15",
+      "desc": "O plăcuță plată, creată pentru a fi așezată la fereastră într-un port transparent dedicat."
+    },
+    "itemArtFace": {
+      "name": "Portret WireString",
+      "desc": "Peste 3,000 de interseții ale unui singur fir pe un cadru de aluminiu 70x70cm."
+    }
+  },
+  "engines": {
+    "lamp": {
+      "visualSim": "Simulare Vizuală",
+      "turnOnBulb": "Aprinde Lumina",
+      "lightType": "Tip Sursă Lumină",
+      "lightBulb": "Bec Central (Ambient)",
+      "lightPuck": "LED Bază (Puck Spotlight)",
+      "baseShape": "Formă de bază",
+      "radialSeg": "Segmente Radiale (Laturi)",
+      "height": "Înălțime (cm)",
+      "baseRad": "Rază Bază (cm)",
+      "topRad": "Rază Top (Tapering)",
+      "modifiers3d": "Modificatori 3D",
+      "twist": "Torsiune / Răsucire (grade)",
+      "bulge": "Umflare / Clepsidră",
+      "surfaceTex": "Textură Suprafețe",
+      "ridgesCount": "Număr Striații",
+      "ridgeDepth": "Adâncime Striații",
+      "spiralRidges": "Spirala Striațiilor",
+      "title": "Sculptură Parametrică",
+      "desc": "Ajustează parametrii matematici pentru a genera lămpa."
+    },
+    "lithophane": {
+      "sourceImage": "Imagine Sursă",
+      "uploadFile": "Încarcă Fișier Imagine",
+      "visualSim": "Simulare Vizuală (Lumină)",
+      "turnOnBulb": "Aprinde Becul (Preview)",
+      "baseShape": "Model de bază",
+      "surfaceType": "Tipul Suprafeței",
+      "modelFlat": "Plat (Panou clasic)",
+      "modelCurved": "Curbat (Arc de stând)",
+      "modelCylinder": "Cilindru complet",
+      "modelDome": "Sferic / Dom",
+      "mainSize": "Dimensiune principală (cm)",
+      "settings": "Setări Litofanie (Contrast 3D)",
+      "thickMax": "Grosime Max (zone întunecate) mm",
+      "thickMin": "Grosime Min (zone luminoase) mm",
+      "title": "Generator Litofanii",
+      "desc": "Încarcă propria imagine și calculează volumul volumetric translucid 3D generat în browser."
+    }
+  }
+}

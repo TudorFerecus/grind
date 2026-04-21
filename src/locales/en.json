@@ -1,0 +1,166 @@
+{
+  "navbar": {
+    "home": "Home",
+    "categories": "Categories",
+    "lamps3d": "3D Lamps",
+    "lithophanes": "Lithophanes",
+    "stringArt": "String Art",
+    "diyCustomizer": "DIY Customizer",
+    "sculptureLamps": "Sculpture Lamps",
+    "litho3d": "3D Lithophanes",
+    "cart": "Cart"
+  },
+  "footer": {
+    "desc": "We bring digital ideas into material reality using our proprietary farm of dozens of 3D printers calibrated for speed and perfect precision.",
+    "links": "Useful Links",
+    "contact": "Contact",
+    "allRights": "All rights reserved."
+  },
+  "hero": {
+    "title": "3D Print Your Ideas",
+    "subtitle": "Transform a photo, drawing or custom frame from scratch into physical plastic",
+    "buttonCustomizer": "Open Customizer",
+    "buttonShop": "View Shop"
+  },
+  "home": {
+    "howItWorks": "How does it work?",
+    "hw1_title": "Choose the Model",
+    "hw1_desc": "Select from preset categories or use procedural forms editors.",
+    "hw2_title": "Customize Live",
+    "hw2_desc": "View the 3D model in your browser and adjust dimensions/textures.",
+    "hw3_title": "We handle the rest",
+    "hw3_desc": "The order goes straight to our robots. It will arrive eco-packaged at your door.",
+    "catTitle1": "Main",
+    "catTitle2": "Categories",
+    "catDesc": "Choose from our collections or create your own design",
+    "prodTitle1": "Featured",
+    "prodTitle2": "Products",
+    "prodDesc": "Design combining digital precision with physical execution",
+    "whyTitle1": "Why",
+    "whyTitle2": "Forge3D?",
+    "usp1": "Precision Printing",
+    "usp1_desc": "We use next-gen 3D printers for perfect millimeter details.",
+    "usp2": "Total Customization",
+    "usp2_desc": "Our DIY tool lets you control every aspect of your design.",
+    "usp3": "Premium Materials",
+    "usp3_desc": "We use only high-quality, durable and eco-friendly polymers.",
+    "usp4": "Lighting Included",
+    "usp4_desc": "Our products come ready to use, with perfectly adapted LED sources."
+  },
+  "category": {
+    "back": "Back",
+    "createOwn": "Create your own masterpiece!",
+    "useCustomizer": "Use our 3D configurator to personalize this product exactly how you want it.",
+    "openCustomizer": "Open Customizer",
+    "productsTotal": "products"
+  },
+  "product": {
+    "backToCategory": "Back to category",
+    "diyAvailable": "Available for DIY Design",
+    "specs": "Specifications",
+    "quantity": "Quantity",
+    "openConfigurator": "Open Configurator",
+    "addToCart": "Add to Cart",
+    "added": "Added!",
+    "outOfStock": "Product currently out of stock."
+  },
+  "customizer": {
+    "exportStl": "Export STL",
+    "exportingStl": "Rendering STL...",
+    "estimatedTotal": "Estimated Total:",
+    "saveAndBuy": "Save Design & Buy",
+    "engine": "ENGINE"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty.",
+    "emptySub": "Looks like you haven't added any products to your cart yet.",
+    "backShop": "Back to Shop",
+    "startShopping": "Continue shopping",
+    "checkout": "Checkout",
+    "total": "Total",
+    "customConfig": "Custom Configuration",
+    "summary": "Order Summary",
+    "subtotal": "Subtotal",
+    "delivery": "Delivery (estimated)",
+    "totalEst": "Estimated Total",
+    "secureCheckout": "100% Secure Checkout. Order completion is simulated.",
+    "proceedCheckout": "Proceed to Checkout"
+  },
+  "data": {
+    "lampi": {
+      "desc": "Procedural 3D printed lamps built from translucent custom PLA."
+    },
+    "lithophanes": {
+      "desc": "Photographs brought to life sculpted in plastic. They glow depending on their thickness when backlit."
+    },
+    "stringArt": {
+      "desc": "Mathematics woven with craftsmanship. Circular frames crafted by a continuous thread stretched between pins."
+    },
+    "itemDiyLampa": {
+      "name": "DIY Parametric Lamp",
+      "desc": "Build your lamp from scratch by defining form, ridges structure and complex traits in the 3D designer."
+    },
+    "itemLampaGeo": {
+      "name": "Geometric Lamp - Honeycomb",
+      "desc": "A lamp 3D printed from eco-friendly material that simulates a molecular organic structure."
+    },
+    "itemLampaTwist": {
+      "name": "Spiral Twist Lamp",
+      "desc": "Clean form, perfect for filament bulbs. 180 degrees twist."
+    },
+    "itemDiyLitho": {
+      "name": "Your Custom Lithophane",
+      "desc": "Upload a photo and we calculate the light level of each pixel, stack it 3D, and produce an eternal backlit frame."
+    },
+    "itemLithoPalt": {
+      "name": "Flat Litho Frame 15x15",
+      "desc": "A flat square plate designed to be placed at windows."
+    },
+    "itemArtFace": {
+      "name": "WireString Portrait",
+      "desc": "Over 3,000 algorithmic intersections of a single thread on a 70x70cm aluminum frame."
+    }
+  },
+  "engines": {
+    "lamp": {
+      "visualSim": "Visual Simulation",
+      "turnOnBulb": "Turn Light On",
+      "lightType": "Light Source Type",
+      "lightBulb": "Central Bulb (Ambient)",
+      "lightPuck": "Base LED (Puck Spotlight)",
+      "baseShape": "Base Shape",
+      "radialSeg": "Radial Segments (Edges)",
+      "height": "Height (cm)",
+      "baseRad": "Base Radius (cm)",
+      "topRad": "Top Radius (Tapering)",
+      "modifiers3d": "3D Modifiers",
+      "twist": "Twist (degrees)",
+      "bulge": "Bulge",
+      "surfaceTex": "Surface Texture",
+      "ridgesCount": "Ridges Count",
+      "ridgeDepth": "Ridge Depth",
+      "spiralRidges": "Spiral Ridges",
+      "title": "Parametric Sculpture",
+      "desc": "Adjust mathematical parameters to generate the lamp."
+    },
+    "lithophane": {
+      "sourceImage": "Source Image",
+      "uploadFile": "Upload Image File",
+      "visualSim": "Visual Simulation (Light)",
+      "turnOnBulb": "Turn On Bulb (Preview)",
+      "baseShape": "Base Model",
+      "surfaceType": "Surface Type",
+      "modelFlat": "Flat (Classic Panel)",
+      "modelCurved": "Curved (Desk Arc)",
+      "modelCylinder": "Full Cylinder",
+      "modelDome": "Spherical / Dome",
+      "mainSize": "Main Dimension (cm)",
+      "settings": "Lithophane Settings (3D Contrast)",
+      "thickMax": "Max Thickness (dark) mm",
+      "thickMin": "Min Thickness (light) mm",
+      "title": "Lithophane Generator",
+      "desc": "Upload your image and calculate volumetric translucent 3D models live."
+    }
+  }
+}
