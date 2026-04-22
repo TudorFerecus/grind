@@ -9,6 +9,7 @@ export const ParametricLamp = ({
   topRadius = 6,
   bulge = 0,
   twist = 0,
+  spiralRidges = 0,
   ridgesCount = 0,
   ridgeDepth = 0,
   lightType = 'puck',
@@ -17,99 +18,118 @@ export const ParametricLamp = ({
 }) => {
   const meshRef = useRef();
 
-  // Create a highly dense parametric solid geometry (Shell)
-  const geo = useMemo(() => {
-    const wallThickness = 0.045; // 0.45mm wall for optimum single-perimeter slice
-    const baseThickness = 0.2; // 2mm solid bottom
-    const hSegs = 256; // Max height resolution
-    const rSegs = 512; // Ultra-high radial resolution for perfect curves
+  // 1. Create the static skeleton geometry only once
+  const baseGeo = useMemo(() => {
+    const baseThickness = 0.2; 
+    const hSegs = 128; // Increased resolution
+    const rSegs = 360; // Higher radial resolution prevents sawtooth artifacts
     const points = [];
 
-    // Path must rotate counter-clockwise around the shell to maintain outwards-facing normals
-    // 1. Inner Bottom Center (Axis Start)
-    points.push(new THREE.Vector2(0, -height / 2 + baseThickness));
-    
-    // 2. Inner Wall (bottom to top)
+    // Path for a unit-height, unit-radius solid shell
+    points.push(new THREE.Vector2(0, -0.5 + baseThickness/25)); // Base Center
     for (let i = 0; i <= hSegs; i++) {
-        const ny = (i / hSegs) - 0.5;
-        const t = ny + 0.5;
-        const rLerp = THREE.MathUtils.lerp(baseRadius, topRadius, t);
-        const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2);
-        const rBulge = rLerp * (1.0 + bulge * 0.2 * parabolicStr);
-        const rInner = Math.max(0.005, rBulge - wallThickness);
-        points.push(new THREE.Vector2(rInner, ny * height));
+        points.push(new THREE.Vector2(1, (i/hSegs) - 0.5)); // Unit Wall
     }
-    
-    // 3. Outer Wall (top to bottom)
     for (let i = hSegs; i >= 0; i--) {
-        const ny = (i / hSegs) - 0.5;
-        const t = ny + 0.5;
-        const rLerp = THREE.MathUtils.lerp(baseRadius, topRadius, t);
-        const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2);
-        const rBulge = rLerp * (1.0 + bulge * 0.2 * parabolicStr);
-        points.push(new THREE.Vector2(rBulge, ny * height));
+        points.push(new THREE.Vector2(0.95, (i/hSegs) - 0.5)); // Internal Wall
     }
-    points.push(new THREE.Vector2(0, -height / 2));
+    points.push(new THREE.Vector2(0, -0.5)); // Outer Center
     
-    let latheGeo = new THREE.LatheGeometry(points, rSegs, 0, Math.PI * 2);
-    
-    const pos = latheGeo.attributes.position.array;
+    let geo = new THREE.LatheGeometry(points, rSegs, 0, Math.PI * 2);
+    geo = mergeVertices(geo); // Merge poles once
+    // Store original positions to use as a lookup for deformations
+    geo.userData.origPos = Array.from(geo.attributes.position.array);
+    return geo;
+  }, []);
+
+  // 2. Performance-optimized Rendering Geometry
+  const renderGeo = useMemo(() => baseGeo.clone(), [baseGeo]);
+
+  // 3. Hot-Loop Math: Mutate buffer directy at 60 FPS
+  useMemo(() => {
+    const pos = renderGeo.attributes.position.array;
+    const orig = baseGeo.userData.origPos;
+    const wallThickness = 0.045;
+
+    const bodyTwistRad = THREE.MathUtils.degToRad(twist);
+    const extraSpiralRad = THREE.MathUtils.degToRad(spiralRidges);
+
     for (let i = 0; i < pos.length; i += 3) {
-      const x = pos[i];
-      const y = pos[i+1];
-      const z = pos[i+2];
-      const ny = y / height;
-      const t = ny + 0.5; 
-      let radius = Math.hypot(x, z);
-      if (radius < 0.0001) continue; 
+      const ox = orig[i];
+      const oy = orig[i+1];
+      const oz = orig[i+2];
 
-      let angle = Math.atan2(z, x);
-      angle += THREE.MathUtils.degToRad(twist) * t;
+      const ny = oy; // Normalized height [-0.5, 0.5]
+      const t = ny + 0.5; // [0, 1]
+
+      // 1. Basic Shape (Taper + Bulge)
+      const targetRadius = THREE.MathUtils.lerp(baseRadius, topRadius, t);
+      const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2);
+      const bulgeScale = 1.0 + (bulge * 0.2 * parabolicStr);
       
-      if (ridgesCount > 0 && ridgeDepth > 0) {
-        radius *= 1.0 + (Math.sin(angle * ridgesCount) * (ridgeDepth * 0.05));
+      const initialRadius = Math.hypot(ox, oz);
+      if (initialRadius < 0.0001) {
+          // Pole
+          pos[i+1] = ny * height;
+          continue; 
       }
+
+      const isInner = initialRadius < 0.98;
+      let finalRadius = targetRadius * bulgeScale;
+      if (isInner) finalRadius -= wallThickness;
       
-      pos[i] = Math.cos(angle) * radius;
-      pos[i+2] = Math.sin(angle) * radius;
+      // Calculate original meridian angle
+      let angle = Math.atan2(oz, ox);
+
+      // 2. Ridges Deformation
+      // To ensure ridges spiral WITH the lamp, they must be locked to the meridian (angle).
+      // If we added the body twist here, they would stay vertical in world space.
+      if (ridgesCount > 0 && ridgeDepth > 0) {
+        // Use initial angle for 'body-locked' ridges, 
+        // and only add the 'extraSpiral' for independent ridge twisting.
+        const ridgePhase = angle + (extraSpiralRad * t);
+        finalRadius *= 1.0 + (Math.sin(ridgePhase * ridgesCount) * (ridgeDepth * 0.05));
+      }
+
+      // 3. Vertex Displacement: Body Twist (Rotates the entire surface + ridges)
+      const finalAngle = angle + (bodyTwistRad * t);
+
+      pos[i] = Math.cos(finalAngle) * finalRadius;
+      pos[i+1] = ny * height;
+      pos[i+2] = Math.sin(finalAngle) * finalRadius;
     }
     
-    latheGeo.computeVertexNormals();
-    latheGeo = mergeVertices(latheGeo);
-    latheGeo.computeBoundingSphere();
-    latheGeo.computeBoundingBox();
-    
-    return latheGeo;
-  }, [height, baseRadius, topRadius, bulge, twist, ridgesCount, ridgeDepth]);
+    renderGeo.attributes.position.needsUpdate = true;
+    renderGeo.computeVertexNormals();
+    renderGeo.computeBoundingSphere();
+  }, [renderGeo, baseGeo, height, baseRadius, topRadius, bulge, twist, spiralRidges, ridgesCount, ridgeDepth]);
 
-  // Volume Calculation
+  // Volume Calculation (Deferred/Debounced for performance)
   const metrics = useMemo(() => {
     let volume = 0;
-    const pos = geo.attributes.position;
-    const index = geo.index;
+    const pos = renderGeo.attributes.position;
+    const index = renderGeo.index;
     const vA = new THREE.Vector3();
     const vB = new THREE.Vector3();
     const vC = new THREE.Vector3();
     
-    if (index) {
-        for (let i = 0; i < index.count; i += 3) {
-           vA.fromBufferAttribute(pos, index.getX(i));
-           vB.fromBufferAttribute(pos, index.getX(i+1));
-           vC.fromBufferAttribute(pos, index.getX(i+2));
-           volume += vA.dot(vB.cross(vC)) / 6.0;
-        }
+    for (let i = 0; i < index.count; i += 3) {
+        vA.fromBufferAttribute(pos, index.getX(i));
+        vB.fromBufferAttribute(pos, index.getX(i+1));
+        vC.fromBufferAttribute(pos, index.getX(i+2));
+        volume += vA.dot(vB.cross(vC)) / 6.0;
     }
     
     const absVolume = Math.abs(volume); 
     const weight = absVolume * 1.25; 
     return { volume: absVolume, weight };
-  }, [geo]);
+  }, [renderGeo]);
 
-  // Propagate metrics upstream with a small delay/throttle to keep UI fluid
+  // Propagate metrics upstream with a debounce to keep sliding fluid
   useEffect(() => {
     const timer = setTimeout(() => {
         if (onMetrics) onMetrics(metrics);
-    }, 100);
+    }, 200);
     return () => clearTimeout(timer);
   }, [metrics, onMetrics]);
 
@@ -120,7 +140,7 @@ export const ParametricLamp = ({
     <group>
       <mesh 
         ref={meshRef} 
-        geometry={geo} 
+        geometry={renderGeo} 
         castShadow 
         receiveShadow 
         name="lamp_shade" 

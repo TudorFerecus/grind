@@ -12,6 +12,7 @@ export const lampEngine = {
     topRadius: 6,
     bulge: 1.5,
     twist: 120,
+    spiralRidges: 0,
     ridgesCount: 24,
     ridgeDepth: 1.5,
     lightType: 'puck',
@@ -51,6 +52,7 @@ export const lampEngine = {
       title: 'engines.lamp.modifiers3d',
       controls: [
         { type: 'range', key: 'twist', label: 'engines.lamp.twist', min: -360, max: 360, step: 5 },
+        { type: 'range', key: 'spiralRidges', label: 'engines.lamp.spiralRidges', min: -360, max: 360, step: 5 },
         { type: 'range', key: 'ridgesCount', label: 'engines.lamp.ridgesCount', min: 0, max: 64, step: 1 },
         { type: 'range', key: 'ridgeDepth', label: 'engines.lamp.ridgeDepth', min: 0, max: 5, step: 0.1 }
       ]
