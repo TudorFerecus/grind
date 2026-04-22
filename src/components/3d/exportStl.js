@@ -22,8 +22,15 @@ export const exportToStl = (scene, filename = 'lamp_design.stl') => {
       }
     });
 
+    // CLAMP/UNIT FIX: Our internal units are in CM (e.g. 25 height).
+    // STL files are unitless, but Slicers (Bambu Studio, Cura) assume 1 unit = 1mm.
+    // We clone and scale by 10 to ensure 25cm becomes 250mm.
+    const exportClone = target.clone();
+    exportClone.scale.set(10, 10, 10);
+    exportClone.updateMatrixWorld(true);
+
     // Parse the object and get binary STL output
-    const buffer = exporter.parse(target, { binary: true });
+    const buffer = exporter.parse(exportClone, { binary: true });
     
     // Create download link
     const blob = new Blob([buffer], { type: 'application/octet-stream' });
