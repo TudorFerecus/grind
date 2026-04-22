@@ -17,8 +17,8 @@ const CategoryCard = ({ category }) => {
           {Icon && <Icon size={24} />}
         </div>
         <div className="transform transition-transform duration-300 group-hover:-translate-y-2">
-          <h3 className="text-2xl font-serif font-bold text-primary-content mb-2">{category.name}</h3>
-          <p className="text-primary-content/80 text-sm mb-4 line-clamp-2 opacity-0 group-hover:opacity-100 h-0 group-hover:h-auto transition-all duration-300">{t(`data.${category.id}.desc`)}</p>
+          <h3 className="text-2xl font-serif font-bold text-primary mb-2">{category.name}</h3>
+          <p className="text-primary/80 text-sm mb-4 line-clamp-2 opacity-0 group-hover:opacity-100 h-0 group-hover:h-auto transition-all duration-300">{category.description}</p>
           <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide uppercase">
             <span>{t('category.openCustomizer')}</span>
             <ArrowRight size={16} className="transform transition-transform group-hover:translate-x-1" />

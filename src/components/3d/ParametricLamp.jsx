@@ -49,34 +49,25 @@ export const ParametricLamp = ({
         const rBulge = rLerp * (1.0 + bulge * 0.2 * parabolicStr);
         points.push(new THREE.Vector2(rBulge, ny * height));
     }
-    
-    // 4. Outer Bottom Center (Axis End)
     points.push(new THREE.Vector2(0, -height / 2));
     
-    // Generate the solid watertight lathe
     let latheGeo = new THREE.LatheGeometry(points, rSegs, 0, Math.PI * 2);
     
-    // --- Optimized Buffer Modification ---
     const pos = latheGeo.attributes.position.array;
     for (let i = 0; i < pos.length; i += 3) {
       const x = pos[i];
       const y = pos[i+1];
       const z = pos[i+2];
-      
       const ny = y / height;
       const t = ny + 0.5; 
-      
       let radius = Math.hypot(x, z);
-      if (radius < 0.0001) continue; // Skip poles to preserve manifoldness
+      if (radius < 0.0001) continue; 
 
       let angle = Math.atan2(z, x);
-      
-      const twistRad = THREE.MathUtils.degToRad(twist);
-      angle += twistRad * t;
+      angle += THREE.MathUtils.degToRad(twist) * t;
       
       if (ridgesCount > 0 && ridgeDepth > 0) {
-        const ridgeScale = 1.0 + (Math.sin(angle * ridgesCount) * (ridgeDepth * 0.05));
-        radius *= ridgeScale;
+        radius *= 1.0 + (Math.sin(angle * ridgesCount) * (ridgeDepth * 0.05));
       }
       
       pos[i] = Math.cos(angle) * radius;
@@ -84,17 +75,14 @@ export const ParametricLamp = ({
     }
     
     latheGeo.computeVertexNormals();
-    
-    // Fix non-manifold poles by merging co-located vertices
     latheGeo = mergeVertices(latheGeo);
-    
     latheGeo.computeBoundingSphere();
     latheGeo.computeBoundingBox();
     
     return latheGeo;
   }, [height, baseRadius, topRadius, bulge, twist, ridgesCount, ridgeDepth]);
 
-  // Volume Calculation using the Divergence Theorem (Tetrahedron Signed Volume)
+  // Volume Calculation
   const metrics = useMemo(() => {
     let volume = 0;
     const pos = geo.attributes.position;
@@ -112,16 +100,18 @@ export const ParametricLamp = ({
         }
     }
     
-    const absVolume = Math.abs(volume); // cubic cm
-    const weight = absVolume * 1.25; // 1.25 g/cm3 approximate density for PETG
+    const absVolume = Math.abs(volume); 
+    const weight = absVolume * 1.25; 
     return { volume: absVolume, weight };
   }, [geo]);
 
-  // Propagate metrics upstream
+  // Propagate metrics upstream with a small delay/throttle to keep UI fluid
   useEffect(() => {
-    if (onMetrics) onMetrics(metrics);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metrics]);
+    const timer = setTimeout(() => {
+        if (onMetrics) onMetrics(metrics);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [metrics, onMetrics]);
 
   const bulbColor = lightOn ? "#ffffff" : "#444444";
   const lightColor = "#ffeedd"; 

@@ -13,7 +13,7 @@ export const products = [
     },
     inStock: true,
     isCustomizable: false,
-    image: 'https://images.unsplash.com/photo-1543884144-8d48858a3617?auto=format&fit=crop&q=80&w=800'
+    image: '/lamp-produce-carousel.png'
   },
   {
     id: 'lampa-organica',

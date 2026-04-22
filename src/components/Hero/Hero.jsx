@@ -19,15 +19,15 @@ const Hero = () => {
         <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left">
           <div className="badge badge-accent badge-outline gap-2 mb-6 p-4">
             <Sparkles size={16} />
-            <span className="font-medium text-accent">Design Nou: Lampa Organică</span>
+            <span className="font-medium text-accent">{t('hero.badge')}</span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-base-content mb-6 leading-tight drop-shadow-md">
             <span className="block">{t('hero.title').split('<br />')[0]}</span>
             {t('hero.title').includes('<br />') ? (
-               <span className="text-primary mt-2 block drop-shadow-[0_0_15px_rgba(212,132,90,0.3)]">{t('hero.title').split('<br />')[1]}</span>
+               <span className="text-primary mt-2 block drop-shadow-[0_0_15px_rgba(212,132,90,0.3)]">{t('hero.title2')}</span>
             ) : (
-               <span className="text-primary mt-2 block drop-shadow-[0_0_15px_rgba(212,132,90,0.3)]">Special pentru tine</span>
+               <span className="text-primary mt-2 block drop-shadow-[0_0_15px_rgba(212,132,90,0.3)]">{t('hero.title2')}</span>
             )}
           </h1>
           
@@ -49,7 +49,7 @@ const Hero = () => {
         <div className="w-full lg:w-1/2 mt-16 lg:mt-0 xl:pl-10">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-base-300">
             <img 
-              src="https://images.unsplash.com/photo-1543884144-8d48858a3617?auto=format&fit=crop&q=80&w=800" 
+              src="/hero-image.jpg" 
               alt="Lampă 3D Parametrică" 
               className="w-full h-[350px] lg:h-[500px] object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             />
