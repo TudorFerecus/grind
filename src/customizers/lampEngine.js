@@ -16,7 +16,6 @@ export const lampEngine = {
     ridgeLayers: [
       { count: 24, depth: 1.5, sharpness: 1, twist: 0 }
     ],
-    twist: 120,
     lightType: 'puck',
     lightOn: true,
   },
@@ -83,12 +82,6 @@ export const lampEngine = {
         { type: 'range', key: 'height', label: 'engines.lamp.height', min: 10, max: 25, step: 0.5 },
         { type: 'range', key: 'baseRadius', label: 'engines.lamp.baseRad', min: 5, max: 11.5, step: 0.5 },
         { type: 'range', key: 'topRadius', label: 'engines.lamp.topRad', min: 5, max: 11.5, step: 0.5 }
-      ]
-    },
-    {
-      title: 'engines.lamp.modifiers3d',
-      controls: [
-        { type: 'range', key: 'twist', label: 'engines.lamp.twist', min: -360, max: 360, step: 5 }
       ]
     }
   ]

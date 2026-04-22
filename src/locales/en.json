@@ -71,7 +71,12 @@
     "exportingStl": "Rendering STL...",
     "estimatedTotal": "Estimated Total:",
     "saveAndBuy": "Save Design & Buy",
-    "engine": "ENGINE"
+    "engine": "ENGINE",
+    "loading": "Loading...",
+    "estWeight": "Est. Weight",
+    "layers": "Layers",
+    "noLayers": "No layers added yet. Click Add to start sculpting.",
+    "randomize": "Randomize Parameters"
   },
   "cart": {
     "title": "Your Cart",
@@ -144,6 +149,7 @@
       "ridgesList": "Ridges List (Additive)",
       "addRidge": "Add Ridge Layer",
       "removeBulge": "Remove",
+      "item": "Layer",
       "bulgeCenter": "Bulge Position",
       "vWavesCount": "Horizontal Rings",
       "vWavesDepth": "Ring Intensity",

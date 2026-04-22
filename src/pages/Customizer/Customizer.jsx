@@ -7,8 +7,22 @@ import { exportToStl } from '../../components/3d/exportStl';
 import { products } from '../../data/products';
 import useStore from '../../store/useStore';
 import { engines } from '../../customizers/engineRegistry';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei';
+
+const Loader3D = () => {
+  const { t } = useTranslation();
+  return (
+    <Html center>
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-xs font-bold uppercase tracking-widest text-primary whitespace-nowrap">
+          {t('customizer.loading')}
+        </span>
+      </div>
+    </Html>
+  );
+};
 
 const Customizer = () => {
   const { engineId } = useParams();
@@ -204,7 +218,7 @@ const Customizer = () => {
                   <span className="text-sm font-bold text-base-content">{t(control.label)}</span>
                   {control.maxCount && (
                     <span className="text-[10px] opacity-50 font-mono">
-                      {items.length} / {control.maxCount} Layers
+                      {items.length} / {control.maxCount} {t('customizer.layers')}
                     </span>
                   )}
                 </div>
@@ -268,7 +282,7 @@ const Customizer = () => {
               
               {items.length === 0 && (
                 <div className="text-center py-8 bg-base-200/50 rounded-2xl border-2 border-dashed border-base-300 opacity-50 text-xs italic">
-                  No layers added yet. Click add to start sculpting.
+                  {t('customizer.noLayers')}
                 </div>
               )}
             </div>
@@ -316,7 +330,7 @@ const Customizer = () => {
             <ambientLight intensity={0.15} />
             <directionalLight position={[10, 20, 10]} intensity={0.5} castShadow shadow-mapSize={[1024, 1024]} />
             
-            <React.Suspense fallback={null}>
+            <React.Suspense fallback={<Loader3D />}>
               <group position={[0, -5, 0]}>
                 {Object.keys(config).length > 0 && <Component3D {...config} onMetrics={setMetrics} />}
               </group>
@@ -349,7 +363,7 @@ const Customizer = () => {
             <h1 className="text-2xl font-serif font-bold text-base-content mb-1">{t(engine.title)}</h1>
             <p className="text-sm text-base-content/60">{t(engine.description)}</p>
           </div>
-          <button className="btn btn-circle btn-outline btn-sm text-primary shadow-sm" onClick={handleRandomize} title="Randomize Parameters">
+          <button className="btn btn-circle btn-outline btn-sm text-primary shadow-sm" onClick={handleRandomize} title={t('customizer.randomize')}>
             <Shuffle size={16} />
           </button>
         </div>
@@ -368,7 +382,7 @@ const Customizer = () => {
         <div className="p-6 border-t border-base-200 bg-base-100 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
           {metrics.weight > 0 && (
             <div className="flex justify-between items-center mb-2">
-              <span className="font-bold text-base-content/60 text-xs uppercase tracking-wider">Est. Weight</span>
+              <span className="font-bold text-base-content/60 text-xs uppercase tracking-wider">{t('customizer.estWeight')}</span>
               <span className="text-sm font-bold text-base-content/80 text-right">{metrics.weight.toFixed(0)}g PETG</span>
             </div>
           )}

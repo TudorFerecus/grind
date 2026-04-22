@@ -71,7 +71,12 @@
     "exportingStl": "Se randează STL...",
     "estimatedTotal": "Total estimat:",
     "saveAndBuy": "Salvează Design & Cumpără",
-    "engine": "ENGINE"
+    "engine": "ENGINE",
+    "loading": "Se încarcă...",
+    "estWeight": "Masă estimată",
+    "layers": "Straturi",
+    "noLayers": "Niciun strat adăugat. Apasă Adaugă pentru a începe.",
+    "randomize": "Randomizează parametrii"
   },
   "cart": {
     "title": "Coșul tău",
@@ -144,6 +149,7 @@
       "ridgesList": "Listă Striații (Aditive)",
       "addRidge": "Adaugă Strat Striații",
       "removeBulge": "Elimină",
+      "item": "Strat",
       "bulgeCenter": "Poziție Umflare",
       "vWavesCount": "Inele Orizontale",
       "vWavesDepth": "Intensitate Inele",

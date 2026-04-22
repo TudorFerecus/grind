@@ -113,18 +113,15 @@ export const ParametricLamp = ({
       }
       finalRadius *= 1.0 + cumulativeRidgeOffset;
 
-      // 4. Final Rotation (Twist)
-      const finalAngle = angle + (bodyTwistRad * t);
-
-      pos[i] = Math.cos(finalAngle) * finalRadius;
+      pos[i] = Math.cos(angle) * finalRadius;
       pos[i+1] = ny * height;
-      pos[i+2] = Math.sin(finalAngle) * finalRadius;
+      pos[i+2] = Math.sin(angle) * finalRadius;
     }
     
     renderGeo.attributes.position.needsUpdate = true;
     renderGeo.computeVertexNormals();
     renderGeo.computeBoundingSphere();
-  }, [renderGeo, baseGeo, height, baseRadius, topRadius, bulges, ridgeLayers, twist, ridgesCount, ridgeDepth, ridgeSharpness]);
+  }, [renderGeo, baseGeo, height, baseRadius, topRadius, bulges, ridgeLayers, ridgesCount, ridgeDepth, ridgeSharpness]);
 
   // Volume Calculation (Deferred/Debounced for performance)
   const metrics = useMemo(() => {
