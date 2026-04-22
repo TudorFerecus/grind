@@ -1,6 +1,7 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { SpotLight } from '@react-three/drei';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 export const ParametricLamp = ({ 
   height = 25, 
@@ -11,53 +12,116 @@ export const ParametricLamp = ({
   ridgesCount = 0,
   ridgeDepth = 0,
   lightType = 'puck',
-  lightOn = true
+  lightOn = true,
+  onMetrics
 }) => {
   const meshRef = useRef();
 
-  // Create a highly dense parametric geometry
-  const geometry = useMemo(() => {
-    // 256 radial and 256 height segments: ultra-smooth to eliminate visible quads even at extreme zoom.
-    const defaultRadius = 10;
-    const geo = new THREE.CylinderGeometry(defaultRadius, defaultRadius, height, 256, 256, true);
+  // Create a highly dense parametric solid geometry (Shell)
+  const geo = useMemo(() => {
+    const wallThickness = 0.045; // 0.45mm wall for optimum single-perimeter slice
+    const baseThickness = 0.2; // 2mm solid bottom
+    const hSegs = 256; // Max height resolution
+    const rSegs = 512; // Ultra-high radial resolution for perfect curves
+    const points = [];
+
+    // Path must rotate counter-clockwise around the shell to maintain outwards-facing normals
+    // 1. Inner Bottom Center (Axis Start)
+    points.push(new THREE.Vector2(0, -height / 2 + baseThickness));
     
-    const positionAttribute = geo.attributes.position;
-    const vertex = new THREE.Vector3();
+    // 2. Inner Wall (bottom to top)
+    for (let i = 0; i <= hSegs; i++) {
+        const ny = (i / hSegs) - 0.5;
+        const t = ny + 0.5;
+        const rLerp = THREE.MathUtils.lerp(baseRadius, topRadius, t);
+        const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2);
+        const rBulge = rLerp * (1.0 + bulge * 0.2 * parabolicStr);
+        const rInner = Math.max(0.005, rBulge - wallThickness);
+        points.push(new THREE.Vector2(rInner, ny * height));
+    }
     
-    for (let i = 0; i < positionAttribute.count; i++) {
-      vertex.fromBufferAttribute(positionAttribute, i);
+    // 3. Outer Wall (top to bottom)
+    for (let i = hSegs; i >= 0; i--) {
+        const ny = (i / hSegs) - 0.5;
+        const t = ny + 0.5;
+        const rLerp = THREE.MathUtils.lerp(baseRadius, topRadius, t);
+        const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2);
+        const rBulge = rLerp * (1.0 + bulge * 0.2 * parabolicStr);
+        points.push(new THREE.Vector2(rBulge, ny * height));
+    }
+    
+    // 4. Outer Bottom Center (Axis End)
+    points.push(new THREE.Vector2(0, -height / 2));
+    
+    // Generate the solid watertight lathe
+    let latheGeo = new THREE.LatheGeometry(points, rSegs, 0, Math.PI * 2);
+    
+    // --- Optimized Buffer Modification ---
+    const pos = latheGeo.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 3) {
+      const x = pos[i];
+      const y = pos[i+1];
+      const z = pos[i+2];
       
-      const ny = vertex.y / height;
-      const t = ny + 0.5;
+      const ny = y / height;
+      const t = ny + 0.5; 
       
-      const radiusScale = THREE.MathUtils.lerp(baseRadius / defaultRadius, topRadius / defaultRadius, t);
-      
-      const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2); 
-      const bulgeScale = 1.0 + (bulge * 0.2 * parabolicStr);
-      
-      let angle = Math.atan2(vertex.z, vertex.x);
+      let radius = Math.hypot(x, z);
+      if (radius < 0.0001) continue; // Skip poles to preserve manifoldness
+
+      let angle = Math.atan2(z, x);
       
       const twistRad = THREE.MathUtils.degToRad(twist);
       angle += twistRad * t;
       
-      let ridgeScale = 1.0;
       if (ridgesCount > 0 && ridgeDepth > 0) {
-        ridgeScale = 1.0 + (Math.sin(angle * ridgesCount) * (ridgeDepth * 0.05));
+        const ridgeScale = 1.0 + (Math.sin(angle * ridgesCount) * (ridgeDepth * 0.05));
+        radius *= ridgeScale;
       }
       
-      const finalScale = radiusScale * bulgeScale * ridgeScale;
-      vertex.x = Math.cos(angle) * defaultRadius * finalScale;
-      vertex.z = Math.sin(angle) * defaultRadius * finalScale;
-      
-      positionAttribute.setXYZ(i, vertex.x, vertex.y, vertex.z);
+      pos[i] = Math.cos(angle) * radius;
+      pos[i+2] = Math.sin(angle) * radius;
     }
     
-    geo.computeVertexNormals();
-    geo.computeBoundingSphere();
-    geo.computeBoundingBox();
+    latheGeo.computeVertexNormals();
     
-    return geo;
+    // Fix non-manifold poles by merging co-located vertices
+    latheGeo = mergeVertices(latheGeo);
+    
+    latheGeo.computeBoundingSphere();
+    latheGeo.computeBoundingBox();
+    
+    return latheGeo;
   }, [height, baseRadius, topRadius, bulge, twist, ridgesCount, ridgeDepth]);
+
+  // Volume Calculation using the Divergence Theorem (Tetrahedron Signed Volume)
+  const metrics = useMemo(() => {
+    let volume = 0;
+    const pos = geo.attributes.position;
+    const index = geo.index;
+    const vA = new THREE.Vector3();
+    const vB = new THREE.Vector3();
+    const vC = new THREE.Vector3();
+    
+    if (index) {
+        for (let i = 0; i < index.count; i += 3) {
+           vA.fromBufferAttribute(pos, index.getX(i));
+           vB.fromBufferAttribute(pos, index.getX(i+1));
+           vC.fromBufferAttribute(pos, index.getX(i+2));
+           volume += vA.dot(vB.cross(vC)) / 6.0;
+        }
+    }
+    
+    const absVolume = Math.abs(volume); // cubic cm
+    const weight = absVolume * 1.25; // 1.25 g/cm3 approximate density for PETG
+    return { volume: absVolume, weight };
+  }, [geo]);
+
+  // Propagate metrics upstream
+  useEffect(() => {
+    if (onMetrics) onMetrics(metrics);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metrics]);
 
   const bulbColor = lightOn ? "#ffffff" : "#444444";
   const lightColor = "#ffeedd"; 
@@ -66,7 +130,7 @@ export const ParametricLamp = ({
     <group>
       <mesh 
         ref={meshRef} 
-        geometry={geometry} 
+        geometry={geo} 
         castShadow 
         receiveShadow 
         name="lamp_shade" 
@@ -75,18 +139,18 @@ export const ParametricLamp = ({
           color="#ffffff" 
           emissive={lightOn ? "#ffcf8c" : "#000000"} 
           emissiveIntensity={lightOn ? 0.8 : 0}
-          transmission={lightOn ? 0.4 : 0.7} /* Balanced to hide vertex structure better while staying translucent */
-          roughness={0.15} 
+          transmission={lightOn ? 0.6 : 0.9} /* High fidelity translucent look */
+          roughness={0.1} 
           metalness={0.0} 
-          thickness={2.0} 
-          ior={1.3} /* Lower IOR reduces refractive distortion that highlights quads */
+          thickness={0.1} 
+          ior={1.47} /* Standard polymer IOR for realistic refraction */
           attenuationColor="#ffffff" 
           side={THREE.DoubleSide}
-          clearcoat={0.2} 
-          clearcoatRoughness={0.1}
+          clearcoat={0.4} 
+          clearcoatRoughness={0.05}
           transparent={true}
-          opacity={lightOn ? 0.98 : 1}
-          dithering={true} /* Helps smooth out gradient banding */
+          opacity={lightOn ? 0.99 : 1}
+          dithering={true} 
         />
       </mesh>
 
@@ -128,20 +192,17 @@ export const ParametricLamp = ({
             decay={2}
             color={lightColor} 
             castShadow
-            shadow-bias={-0.0005} // prevent shadow acne internally
+            shadow-bias={-0.0005} 
           />
         </group>
       )}
       
-      {/* Aesthetic Base cap if non-puck lighting is active */}
       {!lightType.includes('puck') && (
         <mesh position={[0, -height / 2, 0]} rotation={[-Math.PI/2, 0, 0]}>
           <circleGeometry args={[baseRadius * 0.95, 64]} />
           <meshStandardMaterial color="#111" roughness={0.9} />
         </mesh>
       )}
-      
-      {/* Optional Top ring/lip to make geometry feel closed/solid if needed, though open vases are nice */}
     </group>
   );
 };

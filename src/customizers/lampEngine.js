@@ -17,7 +17,12 @@ export const lampEngine = {
     lightType: 'puck',
     lightOn: true,
   },
-  calculatePrice: (config, basePrice) => {
+  calculatePrice: (config, basePrice, metrics) => {
+    if (metrics && metrics.weight) {
+      // Example pricing formula: base price + 1.2 RON per gram of filament
+      return Math.floor(basePrice + (metrics.weight * 1.2));
+    }
+    // Fallback volume proxy if metrics are not yet ready
     const volumeProxy = Math.floor((config.height * config.baseRadius) / 5);
     return basePrice + volumeProxy;
   },

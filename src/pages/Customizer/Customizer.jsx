@@ -19,6 +19,7 @@ const Customizer = () => {
   const { addToCart, openCart } = useStore();
   const [isExporting, setIsExporting] = useState(false);
   const [config, setConfig] = useState({});
+  const [metrics, setMetrics] = useState({ volume: 0, weight: 0 });
 
   // Cautam motorul (Engine-ul configuratorului curent) prin parametrul din URL
   const engine = engines[engineId];
@@ -34,7 +35,7 @@ const Customizer = () => {
     return <Navigate to="/" replace />;
   }
 
-  const currentPrice = config ? engine.calculatePrice(config, engine.basePrice) : engine.basePrice;
+  const currentPrice = config ? engine.calculatePrice(config, engine.basePrice, metrics) : engine.basePrice;
 
   const handleConfigChange = (key, value) => {
     setConfig(prev => ({ ...prev, [key]: value }));
@@ -186,14 +187,24 @@ const Customizer = () => {
       {/* Viewport 3D */}
       <div className="flex-1 relative bg-neutral min-h-[50vh] lg:min-h-0">
         <div className="absolute inset-0">
-          <Canvas shadows camera={{ position: [0, 15, 30], fov: 45 }} onCreated={({ scene }) => { sceneRef.current = scene; }}>
+          <Canvas 
+            shadows 
+            dpr={[1, 2]}
+            gl={{ 
+              antialias: true, 
+              preserveDrawingBuffer: true, 
+              powerPreference: "high-performance" 
+            }}
+            camera={{ position: [0, 15, 30], fov: 45 }} 
+            onCreated={({ scene }) => { sceneRef.current = scene; }}
+          >
             <color attach="background" args={['#292524']} /> {/* Stone 800 - match Tailwind neutral object */}
             <ambientLight intensity={0.15} />
             <directionalLight position={[10, 20, 10]} intensity={0.5} castShadow shadow-mapSize={[1024, 1024]} />
             
             <React.Suspense fallback={null}>
               <group position={[0, -5, 0]}>
-                {Object.keys(config).length > 0 && <Component3D {...config} />}
+                {Object.keys(config).length > 0 && <Component3D {...config} onMetrics={setMetrics} />}
               </group>
               <Environment preset="city" />
             </React.Suspense>
@@ -241,6 +252,12 @@ const Customizer = () => {
         </div>
         
         <div className="p-6 border-t border-base-200 bg-base-100 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          {metrics.weight > 0 && (
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-bold text-base-content/60 text-xs uppercase tracking-wider">Est. Weight</span>
+              <span className="text-sm font-bold text-base-content/80 text-right">{metrics.weight.toFixed(0)}g PETG</span>
+            </div>
+          )}
           <div className="flex justify-between items-center mb-4">
             <span className="font-bold text-base-content/80 text-sm uppercase tracking-wider">{t('customizer.estimatedTotal')}</span>
             <span className="text-2xl font-bold text-primary">{currentPrice} RON</span>
