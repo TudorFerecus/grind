@@ -7,11 +7,12 @@ export const ParametricLamp = ({
   height = 25, 
   baseRadius = 10,
   topRadius = 6,
-  bulge = 0,
+  bulges = [],
+  ridgeLayers = [],
   twist = 0,
-  spiralRidges = 0,
   ridgesCount = 0,
   ridgeDepth = 0,
+  ridgeSharpness = 1,
   lightType = 'puck',
   lightOn = true,
   onMetrics
@@ -21,8 +22,8 @@ export const ParametricLamp = ({
   // 1. Create the static skeleton geometry only once
   const baseGeo = useMemo(() => {
     const baseThickness = 0.2; 
-    const hSegs = 128; // Increased resolution
-    const rSegs = 360; // Higher radial resolution prevents sawtooth artifacts
+    const hSegs = 128; 
+    const rSegs = 512; // Ultra-high resolution for premium sculptural quality
     const points = [];
 
     // Path for a unit-height, unit-radius solid shell
@@ -37,7 +38,6 @@ export const ParametricLamp = ({
     
     let geo = new THREE.LatheGeometry(points, rSegs, 0, Math.PI * 2);
     geo = mergeVertices(geo); // Merge poles once
-    // Store original positions to use as a lookup for deformations
     geo.userData.origPos = Array.from(geo.attributes.position.array);
     return geo;
   }, []);
@@ -52,46 +52,68 @@ export const ParametricLamp = ({
     const wallThickness = 0.045;
 
     const bodyTwistRad = THREE.MathUtils.degToRad(twist);
-    const extraSpiralRad = THREE.MathUtils.degToRad(spiralRidges);
 
     for (let i = 0; i < pos.length; i += 3) {
       const ox = orig[i];
       const oy = orig[i+1];
       const oz = orig[i+2];
 
-      const ny = oy; // Normalized height [-0.5, 0.5]
+      const ny = oy; // [-0.5, 0.5]
       const t = ny + 0.5; // [0, 1]
 
-      // 1. Basic Shape (Taper + Bulge)
-      const targetRadius = THREE.MathUtils.lerp(baseRadius, topRadius, t);
-      const parabolicStr = 1.0 - Math.pow(ny / 0.5, 2);
-      const bulgeScale = 1.0 + (bulge * 0.2 * parabolicStr);
+      // 1. Tapering (Linear)
+      const taperRadius = THREE.MathUtils.lerp(baseRadius, topRadius, t);
+      
+      // 2. Additive Bulges (Sum of Gaussian contributions)
+      let cumulativeBulgeFactor = 0;
+      if (Array.isArray(bulges)) {
+        for (const b of bulges) {
+            const intensity = b.bulge || 0;
+            const center = (b.bulgeCenter || 0) - 0.5; // Map [0,1] to [-0.5, 0.5]
+            const sigma = 0.25; 
+            const gaussian = Math.exp(-Math.pow(ny - center, 2) / (2 * Math.pow(sigma, 2)));
+            cumulativeBulgeFactor += intensity * 0.2 * gaussian;
+        }
+      }
+      const bulgeScale = 1.0 + cumulativeBulgeFactor;
       
       const initialRadius = Math.hypot(ox, oz);
       if (initialRadius < 0.0001) {
-          // Pole
           pos[i+1] = ny * height;
           continue; 
       }
 
       const isInner = initialRadius < 0.98;
-      let finalRadius = targetRadius * bulgeScale;
+      let finalRadius = taperRadius * bulgeScale;
+      
+      // Geometric Clamping: Ensure the lamp fits within the printer's bed (11.5cm radius)
+      // We apply this BEFORE subtracting wall thickness to maintain consistent shells
+      finalRadius = Math.min(finalRadius, 11.5);
+      
       if (isInner) finalRadius -= wallThickness;
       
-      // Calculate original meridian angle
       let angle = Math.atan2(oz, ox);
 
-      // 2. Ridges Deformation
-      // To ensure ridges spiral WITH the lamp, they must be locked to the meridian (angle).
-      // If we added the body twist here, they would stay vertical in world space.
-      if (ridgesCount > 0 && ridgeDepth > 0) {
-        // Use initial angle for 'body-locked' ridges, 
-        // and only add the 'extraSpiral' for independent ridge twisting.
-        const ridgePhase = angle + (extraSpiralRad * t);
-        finalRadius *= 1.0 + (Math.sin(ridgePhase * ridgesCount) * (ridgeDepth * 0.05));
-      }
+      // 3. Advanced Additive Ridge Deformation (Peak Sharpening + Per-layer Twist)
+      let cumulativeRidgeOffset = 0;
+      if (Array.isArray(ridgeLayers)) {
+        for (const layer of ridgeLayers) {
+          const rCount = layer.count || 0;
+          const rDepth = layer.depth || 0;
+          const rSharp = layer.sharpness || 1;
+          const rTwistRad = THREE.MathUtils.degToRad(layer.twist || 0);
 
-      // 3. Vertex Displacement: Body Twist (Rotates the entire surface + ridges)
+          if (rCount > 0 && rDepth > 0) {
+            const layerPhase = angle + (rTwistRad * t);
+            const sn = Math.sin(layerPhase * rCount);
+            const sharpSn = Math.pow(Math.abs(sn), rSharp) * Math.sign(sn);
+            cumulativeRidgeOffset += sharpSn * (rDepth * 0.05);
+          }
+        }
+      }
+      finalRadius *= 1.0 + cumulativeRidgeOffset;
+
+      // 4. Final Rotation (Twist)
       const finalAngle = angle + (bodyTwistRad * t);
 
       pos[i] = Math.cos(finalAngle) * finalRadius;
@@ -102,7 +124,7 @@ export const ParametricLamp = ({
     renderGeo.attributes.position.needsUpdate = true;
     renderGeo.computeVertexNormals();
     renderGeo.computeBoundingSphere();
-  }, [renderGeo, baseGeo, height, baseRadius, topRadius, bulge, twist, spiralRidges, ridgesCount, ridgeDepth]);
+  }, [renderGeo, baseGeo, height, baseRadius, topRadius, bulges, ridgeLayers, twist, ridgesCount, ridgeDepth, ridgeSharpness]);
 
   // Volume Calculation (Deferred/Debounced for performance)
   const metrics = useMemo(() => {

@@ -10,20 +10,20 @@ export const lampEngine = {
     height: 25,
     baseRadius: 10,
     topRadius: 6,
-    bulge: 1.5,
+    bulges: [
+      { bulge: 1.5, bulgeCenter: 0.5 }
+    ],
+    ridgeLayers: [
+      { count: 24, depth: 1.5, sharpness: 1, twist: 0 }
+    ],
     twist: 120,
-    spiralRidges: 0,
-    ridgesCount: 24,
-    ridgeDepth: 1.5,
     lightType: 'puck',
     lightOn: true,
   },
   calculatePrice: (config, basePrice, metrics) => {
     if (metrics && metrics.weight) {
-      // Example pricing formula: base price + 1.2 RON per gram of filament
       return Math.floor(basePrice + (metrics.weight * 1.2));
     }
-    // Fallback volume proxy if metrics are not yet ready
     const volumeProxy = Math.floor((config.height * config.baseRadius) / 5);
     return basePrice + volumeProxy;
   },
@@ -40,21 +40,55 @@ export const lampEngine = {
       ]
     },
     {
+      title: 'engines.lamp.bulgeList',
+      controls: [
+        { 
+          type: 'repeater', 
+          key: 'bulges', 
+          label: 'engines.lamp.bulgeList', 
+          itemLabel: 'engines.lamp.bulge',
+          addButtonLabel: 'engines.lamp.addBulge',
+          maxCount: 5,
+          defaultItem: { bulge: 1.0, bulgeCenter: 0.5 },
+          schema: [
+            { type: 'range', key: 'bulge', label: 'engines.lamp.bulge', min: -5, max: 5, step: 0.1 },
+            { type: 'range', key: 'bulgeCenter', label: 'engines.lamp.bulgeCenter', min: 0, max: 1, step: 0.05 }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'engines.lamp.ridgesList',
+      controls: [
+        {
+          type: 'repeater',
+          key: 'ridgeLayers',
+          label: 'engines.lamp.ridgesList',
+          itemLabel: 'engines.lamp.ridge',
+          addButtonLabel: 'engines.lamp.addRidge',
+          maxCount: 3,
+          defaultItem: { count: 12, depth: 1, sharpness: 1, twist: 0 },
+          schema: [
+            { type: 'range', key: 'count', label: 'engines.lamp.ridgesCount', min: 0, max: 64, step: 1 },
+            { type: 'range', key: 'depth', label: 'engines.lamp.ridgeDepth', min: 0, max: 5, step: 0.1 },
+            { type: 'range', key: 'sharpness', label: 'engines.lamp.ridgeSharpness', min: 0.1, max: 5, step: 0.1 },
+            { type: 'range', key: 'twist', label: 'engines.lamp.twist', min: -360, max: 360, step: 5 }
+          ]
+        }
+      ]
+    },
+    {
       title: 'engines.lamp.baseShape',
       controls: [
-        { type: 'range', key: 'height', label: 'engines.lamp.height', min: 10, max: 40, step: 0.5 },
-        { type: 'range', key: 'baseRadius', label: 'engines.lamp.baseRad', min: 4, max: 20, step: 0.5 },
-        { type: 'range', key: 'topRadius', label: 'engines.lamp.topRad', min: 2, max: 20, step: 0.5 },
-        { type: 'range', key: 'bulge', label: 'engines.lamp.bulge', min: -5, max: 5, step: 0.1 }
+        { type: 'range', key: 'height', label: 'engines.lamp.height', min: 10, max: 25, step: 0.5 },
+        { type: 'range', key: 'baseRadius', label: 'engines.lamp.baseRad', min: 5, max: 11.5, step: 0.5 },
+        { type: 'range', key: 'topRadius', label: 'engines.lamp.topRad', min: 5, max: 11.5, step: 0.5 }
       ]
     },
     {
       title: 'engines.lamp.modifiers3d',
       controls: [
-        { type: 'range', key: 'twist', label: 'engines.lamp.twist', min: -360, max: 360, step: 5 },
-        { type: 'range', key: 'spiralRidges', label: 'engines.lamp.spiralRidges', min: -360, max: 360, step: 5 },
-        { type: 'range', key: 'ridgesCount', label: 'engines.lamp.ridgesCount', min: 0, max: 64, step: 1 },
-        { type: 'range', key: 'ridgeDepth', label: 'engines.lamp.ridgeDepth', min: 0, max: 5, step: 0.1 }
+        { type: 'range', key: 'twist', label: 'engines.lamp.twist', min: -360, max: 360, step: 5 }
       ]
     }
   ]

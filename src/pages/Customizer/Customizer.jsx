@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
-import { Download, ShoppingCart, Activity, Shuffle } from 'lucide-react';
+import { Download, ShoppingCart, Activity, Shuffle, Trash2, ChevronDown, ChevronUp, Layers, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import LampPreview from '../../components/3d/LampPreview'; // We will dynamically render instead, but LampPreview wraps <Canvas>.
 import { exportToStl } from '../../components/3d/exportStl';
@@ -20,6 +20,7 @@ const Customizer = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [config, setConfig] = useState({});
   const [metrics, setMetrics] = useState({ volume: 0, weight: 0 });
+  const [expandedIndices, setExpandedIndices] = useState({}); // Tracking expanded items per repeater key
 
   // Cautam motorul (Engine-ul configuratorului curent) prin parametrul din URL
   const engine = engines[engineId];
@@ -39,6 +40,45 @@ const Customizer = () => {
 
   const handleConfigChange = (key, value) => {
     setConfig(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleArrayItemChange = (arrayKey, index, subKey, value) => {
+    setConfig(prev => {
+      const newArray = [...(prev[arrayKey] || [])];
+      newArray[index] = { ...newArray[index], [subKey]: value };
+      return { ...prev, [arrayKey]: newArray };
+    });
+  };
+
+  const handleAddArrayItem = (arrayKey, defaultValue) => {
+    setConfig(prev => ({
+      ...prev,
+      [arrayKey]: [...(prev[arrayKey] || []), { ...defaultValue }]
+    }));
+    // Auto-expand the newly added item
+    setExpandedIndices(prev => {
+      const current = prev[arrayKey] || [];
+      const newIndex = (config[arrayKey] || []).length;
+      return { ...prev, [arrayKey]: [...current, newIndex] };
+    });
+  };
+
+  const toggleExpand = (arrayKey, index) => {
+    setExpandedIndices(prev => {
+      const current = prev[arrayKey] || [];
+      if (current.includes(index)) {
+        return { ...prev, [arrayKey]: current.filter(i => i !== index) };
+      } else {
+        return { ...prev, [arrayKey]: [...current, index] };
+      }
+    });
+  };
+
+  const handleRemoveArrayItem = (arrayKey, index) => {
+    setConfig(prev => ({
+      ...prev,
+      [arrayKey]: (prev[arrayKey] || []).filter((_, i) => i !== index)
+    }));
   };
 
   const handleImageUpload = (e, key) => {
@@ -63,8 +103,12 @@ const Customizer = () => {
 
   const handleRandomize = () => {
     const newConfig = { ...config };
+    const excludeKeys = ['lightOn', 'lightType', 'bulges']; // Exclude additive arrays from basic shuffle
+
     engine.sections.forEach(section => {
       section.controls.forEach(ctrl => {
+        if (excludeKeys.includes(ctrl.key)) return;
+
         if (ctrl.type === 'range') {
           const range = ctrl.max - ctrl.min;
           const steps = range / ctrl.step;
@@ -95,7 +139,6 @@ const Customizer = () => {
       addToCart(customProduct, 1, config);
       openCart();
     } else {
-      // Fallback
       addToCart({
         id: `diy-${engine.id}-${Date.now()}`,
         name: `Produs Custom: ${engine.title}`,
@@ -106,38 +149,38 @@ const Customizer = () => {
     }
   };
 
-  const renderControl = (control) => {
-    if (control.condition && !control.condition(config)) return null;
+  const renderControl = (control, data = config, onChange = handleConfigChange) => {
+    if (control.condition && !control.condition(data)) return null;
 
     switch (control.type) {
       case 'range':
         return (
           <div className="form-control w-full mb-4" key={control.key}>
             <div className="flex justify-between mb-1">
-              <label className="text-sm font-medium text-base-content/70">{t(control.label)}</label>
-              <span className="text-sm font-bold text-primary">{config[control.key]}</span>
+              <label className="text-xs font-bold text-base-content/50 uppercase tracking-tighter">{t(control.label)}</label>
+              <span className="text-xs font-mono font-bold text-primary">{data[control.key]}</span>
             </div>
             <input 
               type="range" 
               min={control.min} 
               max={control.max} 
               step={control.step}
-              value={config[control.key] || 0} 
-              onChange={(e) => handleConfigChange(control.key, parseFloat(e.target.value))} 
-              className="range range-primary range-sm"
+              value={data[control.key] || 0} 
+              onChange={(e) => onChange(control.key, parseFloat(e.target.value))} 
+              className="range range-primary range-xs"
             />
           </div>
         );
       case 'select':
         return (
           <div className="form-control w-full mb-4" key={control.key}>
-            <label className="text-sm font-medium text-base-content/70 mb-2">{t(control.label)}</label>
+            <label className="text-xs font-bold text-base-content/50 uppercase tracking-tighter mb-2">{t(control.label)}</label>
             <div className="join w-full">
               {control.options.map(opt => (
                 <button
                   key={opt.value}
-                  className={`btn join-item flex-1 ${config[control.key] === opt.value ? 'btn-primary' : 'btn-outline border-base-300'}`}
-                  onClick={() => handleConfigChange(control.key, opt.value)}
+                  className={`btn join-item btn-xs flex-1 ${data[control.key] === opt.value ? 'btn-primary' : 'btn-outline border-base-300'}`}
+                  onClick={() => onChange(control.key, opt.value)}
                 >
                   {t(opt.label)}
                 </button>
@@ -145,20 +188,91 @@ const Customizer = () => {
             </div>
           </div>
         );
-      case 'imageUpload':
+      case 'repeater':
+        const items = config[control.key] || [];
+        const isLimitReached = control.maxCount && items.length >= control.maxCount;
+        const currentExpanded = expandedIndices[control.key] || [0]; // Default first item open
+        
         return (
-           <div className="form-control w-full mb-4" key={control.key}>
-             <label className="text-sm font-medium text-base-content/70 mb-2">{t(control.label)}</label>
-             <input 
-               type="file" 
-               accept="image/png, image/jpeg, image/jpg" 
-               onChange={(e) => handleImageUpload(e, control.key)}
-               className="file-input file-input-bordered file-input-primary w-full max-w-xs"
-             />
-             {config[control.key] && (
-               <img src={config[control.key]} alt="Preview" className="mt-4 w-full h-32 object-contain bg-base-200 rounded-box border border-base-300" />
-             )}
-           </div>
+          <div className="space-y-4 mb-6" key={control.key}>
+            <div className="flex justify-between items-center bg-base-300/30 p-3 rounded-2xl border border-base-300">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                   <Layers size={18} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-base-content">{t(control.label)}</span>
+                  {control.maxCount && (
+                    <span className="text-[10px] opacity-50 font-mono">
+                      {items.length} / {control.maxCount} Layers
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button 
+                className={`btn btn-sm btn-primary rounded-xl shadow-lg hover:scale-105 transition-transform ${isLimitReached ? 'btn-disabled opacity-50' : ''}`}
+                onClick={() => !isLimitReached && handleAddArrayItem(control.key, control.defaultItem)}
+                disabled={isLimitReached}
+              >
+                <Plus size={16} />
+                {t(control.addButtonLabel || 'Add')}
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {items.map((item, index) => {
+                const isExpanded = currentExpanded.includes(index);
+                return (
+                  <div key={index} className="bg-base-100 border border-base-200 rounded-2xl overflow-hidden shadow-sm hover:border-primary/30 transition-colors">
+                    {/* Header */}
+                    <div 
+                      className="flex justify-between items-center p-3 cursor-pointer bg-base-100 select-none hover:bg-base-200/50"
+                      onClick={() => toggleExpand(control.key, index)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-base-300 flex items-center justify-center text-[10px] font-bold">
+                          {index + 1}
+                        </div>
+                        <span className="text-xs font-bold uppercase tracking-wider text-base-content/70">
+                          {t(control.itemLabel || 'engines.lamp.item')} {index + 1}
+                        </span>
+                        {isExpanded ? <ChevronUp size={14} className="opacity-40" /> : <ChevronDown size={14} className="opacity-40" />}
+                      </div>
+                      
+                      <button 
+                        className="btn btn-ghost btn-xs text-error hover:bg-error/10 px-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveArrayItem(control.key, index);
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    {/* Content */}
+                    {isExpanded && (
+                      <div className="p-4 border-t border-base-200 bg-base-200/20">
+                        <div className="grid grid-cols-1 gap-1">
+                          {control.schema.map(subCtrl => renderControl(
+                            subCtrl, 
+                            item, 
+                            (subKey, value) => handleArrayItemChange(control.key, index, subKey, value)
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              
+              {items.length === 0 && (
+                <div className="text-center py-8 bg-base-200/50 rounded-2xl border-2 border-dashed border-base-300 opacity-50 text-xs italic">
+                  No layers added yet. Click add to start sculpting.
+                </div>
+              )}
+            </div>
+          </div>
         );
       case 'checkbox':
         return (
@@ -167,9 +281,9 @@ const Customizer = () => {
               <span className="text-sm font-medium text-base-content/70">{t(control.label)}</span>
               <input 
                 type="checkbox" 
-                className="toggle toggle-primary" 
-                checked={!!config[control.key]} 
-                onChange={(e) => handleConfigChange(control.key, e.target.checked)} 
+                className="toggle toggle-primary toggle-sm" 
+                checked={!!data[control.key]} 
+                onChange={(e) => onChange(control.key, e.target.checked)} 
               />
             </label>
           </div>
@@ -182,10 +296,10 @@ const Customizer = () => {
   const Component3D = engine.Component3D;
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)] w-full overflow-hidden bg-base-100">
+    <div className="flex flex-col lg:flex-row h-[calc(100svh-64px)] lg:h-[calc(100vh-64px)] w-full overflow-hidden bg-base-100">
       
       {/* Viewport 3D */}
-      <div className="flex-1 relative bg-neutral min-h-[50vh] lg:min-h-0">
+      <div className="h-[40vh] lg:h-full lg:flex-1 relative bg-neutral shrink-0">
         <div className="absolute inset-0">
           <Canvas 
             shadows 
@@ -229,7 +343,7 @@ const Customizer = () => {
       </div>
 
       {/* Controls Panel */}
-      <div className="w-full lg:w-96 bg-base-100 flex flex-col border-t lg:border-t-0 lg:border-l border-base-200 z-10 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] lg:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
+      <div className="flex-1 min-h-0 lg:w-96 bg-base-100 flex flex-col border-t lg:border-t-0 lg:border-l border-base-200 z-10 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] lg:shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.1)]">
         <div className="p-6 border-b border-base-200 bg-base-100 shrink-0 flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-serif font-bold text-base-content mb-1">{t(engine.title)}</h1>
@@ -245,7 +359,7 @@ const Customizer = () => {
             <div key={idx} className="bg-base-100 p-5 rounded-2xl border border-base-200 shadow-sm">
               <h3 className="text-lg font-bold mb-4 pb-2 border-b border-base-200 text-base-content">{t(section.title)}</h3>
               <div className="space-y-2">
-                {section.controls.map(renderControl)}
+                {section.controls.map(ctrl => renderControl(ctrl))}
               </div>
             </div>
           ))}
