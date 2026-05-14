@@ -44,5 +44,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # We use the config file, so we only need to specify the branch for production/preview logic
-          command: pages deploy dist --branch=${{ github.ref == 'refs/heads/prod' && 'main' || 'staging' }}
+          command: pages deploy dist --project-name=grind --branch=${{ github.ref == 'refs/heads/prod' && 'main' || 'staging' }}
