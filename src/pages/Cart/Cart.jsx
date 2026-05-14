@@ -5,8 +5,60 @@ import { useTranslation } from 'react-i18next';
 import useStore from '../../store/useStore';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateQuantity, getCartTotal } = useStore();
+  const { cart, removeFromCart, updateQuantity, getCartTotal, clearCart } = useStore();
   const { t } = useTranslation();
+
+  const [isCheckingOut, setIsCheckingOut] = React.useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = React.useState(false);
+  
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      const orderData = {
+        totalAmount: getCartTotal() + 20,
+        shippingAddress: {
+          name: "Guest User",
+          street: "Strada Exemplu nr 1",
+          city: "Bucuresti",
+          postalCode: "010000",
+          country: "Romania",
+          phone: "0700000000"
+        },
+        items: cart.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          unitPrice: item.product.price,
+          designId: item.customConfig 
+        }))
+      };
+      
+      const { api } = await import('../../api/client');
+      await api.orders.create(orderData);
+      
+      setCheckoutSuccess(true);
+      if (clearCart) clearCart();
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert(t('common.error'));
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
+  if (checkoutSuccess) {
+    return (
+      <div className="container mx-auto px-4 max-w-5xl py-24 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div className="w-24 h-24 bg-success/20 text-success rounded-full flex items-center justify-center mb-6">
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+        </div>
+        <h1 className="text-3xl font-serif font-bold text-base-content mb-3">{t('cart.orderSuccess')}</h1>
+        <p className="text-base-content/70 text-lg mb-8 max-w-md">{t('cart.orderSuccessSub')}</p>
+        <Link to="/" onClick={() => window.location.reload()} className="btn btn-primary btn-lg shadow-md hover:-translate-y-1 transition-transform">
+          {t('cart.backShop')}
+        </Link>
+      </div>
+    );
+  }
 
   if (cart.length === 0) {
     return (
@@ -37,11 +89,11 @@ const Cart = () => {
         <div className="w-full lg:w-2/3 flex flex-col gap-4">
           {cart.map((item) => (
             <div key={item.id} className="flex flex-col sm:flex-row bg-base-100 p-4 rounded-2xl shadow-sm border border-base-200 gap-4 relative items-start sm:items-center">
-              <img src={item.product.image} alt={item.product.name} className="w-full sm:w-24 h-24 object-cover rounded-xl bg-base-200" />
+              <img src={item.product.image.startsWith('http') ? item.product.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}${item.product.image}`} alt={item.product.name} className="w-full sm:w-24 h-24 object-cover rounded-xl bg-base-200" />
               
               <div className="flex-1">
                 <Link to={`/product/${item.product.id}`} className="text-lg font-bold hover:text-primary transition-colors text-base-content block mb-1">
-                  {t(`data.${item.product.id}.name`)}
+                  {item.product.name}
                 </Link>
                 <span className="text-primary font-semibold block mb-2">{item.product.price} RON</span>
                 
@@ -49,10 +101,7 @@ const Cart = () => {
                    <div className="mt-2 p-3 bg-base-200 rounded-lg text-sm border border-base-300">
                       <span className="badge badge-primary badge-sm mb-2">{t('cart.customConfig')}</span>
                       <ul className="text-base-content/70 space-y-1 grid grid-cols-2 gap-x-4">
-                        <li>Formă: {item.customConfig.shape || 'Standard'}</li>
-                        <li>Dimensiune: {item.customConfig.scale || '1'}</li>
-                        {item.customConfig.thickness && <li>Grosime perete: {item.customConfig.thickness}</li>}
-                        {item.customConfig.opacity && <li>Opacitate: {item.customConfig.opacity}</li>}
+                        <li>{t('cart.orderId')}: {typeof item.customConfig === 'string' ? item.customConfig.substring(0,8) : '...'}</li>
                       </ul>
                    </div>
                 )}
@@ -80,7 +129,7 @@ const Cart = () => {
                 <button 
                   className="btn btn-ghost btn-sm text-error hover:bg-error/10 sm:self-end mt-1"
                   onClick={() => removeFromCart(item.id)}
-                  title="Elimină"
+                  title={t('common.delete')}
                 >
                   <Trash2 size={18} />
                 </button>
@@ -110,8 +159,12 @@ const Cart = () => {
             <span className="text-2xl font-bold text-primary">{(getCartTotal() + 20).toFixed(2)} RON</span>
           </div>
 
-          <button className="btn btn-primary w-full btn-lg shadow-md hover:-translate-y-1 transition-transform mb-4">
-            {t('cart.proceedCheckout')}
+          <button 
+            onClick={handleCheckout}
+            disabled={isCheckingOut}
+            className={`btn btn-primary w-full btn-lg shadow-md hover:-translate-y-1 transition-transform mb-4 ${isCheckingOut ? 'loading' : ''}`}
+          >
+            {isCheckingOut ? t('cart.processProcessing') : t('cart.proceedCheckout')}
           </button>
 
           <p className="text-center text-xs text-base-content/60 px-4">

@@ -9,6 +9,10 @@ import ProductDetail from './pages/ProductDetail/ProductDetail';
 import Customizer from './pages/Customizer/Customizer';
 import Cart from './pages/Cart/Cart';
 
+import AdminLayout from './components/AdminLayout/AdminLayout';
+import AdminLogin from './pages/Admin/AdminLogin';
+import AdminProducts from './pages/Admin/AdminProducts';
+
 // Component to scroll to top on navigation change
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -32,6 +36,12 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/customizer/:engineId" element={<Customizer />} />
           <Route path="/cart" element={<Cart />} />
+
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminProducts />} />
+            <Route path="products" element={<AdminProducts />} />
+          </Route>
         </Routes>
       </main>
 

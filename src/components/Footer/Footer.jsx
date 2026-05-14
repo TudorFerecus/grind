@@ -40,19 +40,19 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-bold text-base-100 mb-6 uppercase tracking-wider">{t('footer.links')}</h4>
             <ul className="space-y-3 font-medium">
-              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">Despre Noi</a></li>
-              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">Întrebări Frecvente</a></li>
-              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">Livrare și Retur</a></li>
-              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">Termeni și Condiții</a></li>
+              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">{t('footer.about')}</a></li>
+              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">{t('footer.faq')}</a></li>
+              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">{t('footer.shipping')}</a></li>
+              <li><a href="#" className="text-neutral-content/70 hover:text-primary transition-colors">{t('footer.terms')}</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-lg font-bold text-base-100 mb-6 uppercase tracking-wider">Fii la curent</h4>
-            <p className="text-neutral-content/70 mb-4">Abonează-te pentru a afla despre noile lansări și reduceri.</p>
+            <h4 className="text-lg font-bold text-base-100 mb-6 uppercase tracking-wider">{t('footer.newsletter')}</h4>
+            <p className="text-neutral-content/70 mb-4">{t('footer.newsletterSub')}</p>
             <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="Adresa ta de email" className="input input-bordered w-full bg-neutral-focus text-base-100 border-neutral focus:border-primary" required />
-              <button type="submit" className="btn btn-primary w-full shadow-md">Abonează-te</button>
+              <input type="email" placeholder={t('footer.emailPlaceholder')} className="input input-bordered w-full bg-neutral-focus text-base-100 border-neutral focus:border-primary" required />
+              <button type="submit" className="btn btn-primary w-full shadow-md">{t('footer.subscribe')}</button>
             </form>
           </div>
 
