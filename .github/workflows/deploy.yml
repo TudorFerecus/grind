@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     # Map branch to GitHub Environment
     environment:
-      name: ${{ github.ref == 'refs/heads/prod' && 'production' || 'preview' }}
+      name: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'preview' }}
       url: ${{ steps.cloudflare_deploy.outputs.deployment-url }}
     permissions:
       contents: read
@@ -44,5 +44,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # The --branch flag in Wrangler tells Cloudflare which "Pages Environment" to use
-          command: pages deploy dist --project-name=grind --branch=${{ github.ref == 'refs/heads/prod' && 'main' || 'staging' }}
+          # We use the config file, so we only need to specify the branch for production/preview logic
+          command: pages deploy dist --branch=${{ github.ref == 'refs/heads/prod' && 'main' || 'staging' }}
