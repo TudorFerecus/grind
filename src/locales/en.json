@@ -14,7 +14,15 @@
     "desc": "We bring digital ideas into material reality using our proprietary farm of dozens of 3D printers calibrated for speed and perfect precision.",
     "links": "Useful Links",
     "contact": "Contact",
-    "allRights": "All rights reserved."
+    "allRights": "All rights reserved.",
+    "about": "About Us",
+    "faq": "FAQ",
+    "shipping": "Shipping & Returns",
+    "terms": "Terms & Conditions",
+    "newsletter": "Stay Updated",
+    "newsletterSub": "Subscribe to hear about new launches and discounts.",
+    "emailPlaceholder": "Your email address",
+    "subscribe": "Subscribe"
   },
   "hero": {
     "title": "3D Print Your Ideas",
@@ -92,7 +100,11 @@
     "delivery": "Delivery (estimated)",
     "totalEst": "Estimated Total",
     "secureCheckout": "100% Secure Checkout. Order completion is simulated.",
-    "proceedCheckout": "Proceed to Checkout"
+    "proceedCheckout": "Proceed to Checkout",
+    "orderSuccess": "Order placed successfully!",
+    "orderSuccessSub": "Thank you for your order. We will contact you shortly for confirmation.",
+    "orderId": "Design ID",
+    "processProcessing": "Processing..."
   },
   "data": {
     "lampi": {
@@ -160,7 +172,32 @@
       "ridgeSharpness": "Ridge Sharpness",
       "spiralRidges": "Spiral Ridges",
       "title": "Parametric Sculpture",
-      "desc": "Adjust mathematical parameters to generate the lamp."
+      "waistPos": "Waist Position",
+      "ripple": "Horizontal Waves",
+      "rippleFreq": "Wave Count",
+      "desc": "Adjust mathematical parameters to generate the lamp.",
+      "materialFinish": "Material Finish",
+      "frosted": "Frosted PETG (Diffuse)",
+      "crystal": "Crystal Clear (Glossy)",
+      "profile": "Lamp Profile",
+      "texture": "Texture Pattern",
+      "density": "Pattern Density",
+      "smooth": "Smooth",
+      "fluted": "Fluted",
+      "spiral": "Spiral Ribs",
+      "organic": "Organic Liquid",
+      "diamond": "Diamond Cut",
+      "cylinder": "Cylindrical",
+      "hourglass": "Hourglass",
+      "teardrop": "Teardrop",
+      "bulbProfile": "Classic Bulb",
+      "performanceMode": "Performance Mode",
+      "performanceGPU": "Smooth (GPU Optimized)",
+      "performanceHigh": "Ultra Detail (High-Poly)",
+      "styleArchDesc": "Vertical flutes inspired by classic architecture",
+      "styleOrgDesc": "Fluid lava-like forms — asymmetric and natural",
+      "styleSpiDesc": "Dynamically twisted texture that captures light",
+      "styleDiaDesc": "Geometric facets, crystalline appearance"
     },
     "lithophane": {
       "sourceImage": "Source Image",
@@ -179,6 +216,38 @@
       "thickMin": "Min Thickness (light) mm",
       "title": "Lithophane Generator",
       "desc": "Upload your image and calculate volumetric translucent 3D models live."
+    },
+    "common": {
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "success": "Success!",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit"
+    },
+    "admin": {
+      "loginTitle": "Admin Login",
+      "username": "Username",
+      "password": "Password",
+      "loginButton": "Login",
+      "productsTitle": "Products",
+      "ordersTitle": "Orders",
+      "addProduct": "Add Product",
+      "editProduct": "Edit Product",
+      "deleteConfirm": "Are you sure you want to delete this product?",
+      "statusInStock": "In Stock",
+      "statusOutOfStock": "Out of Stock",
+      "statusCustomizable": "3D Customizable",
+      "productName": "Product Name",
+      "description": "Description",
+      "slug": "Slug (URL)",
+      "category": "Category",
+      "price": "Base Price (RON)",
+      "image": "Product Image",
+      "logout": "Logout",
+      "status": "Status",
+      "actions": "Actions"
     }
   }
 }

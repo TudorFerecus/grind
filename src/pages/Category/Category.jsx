@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { Settings2, ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { categories } from '../../data/categories';
-import { products } from '../../data/products';
+import { api } from '../../api/client';
 import ProductCard from '../../components/ProductCard/ProductCard';
 
 const Category = () => {
   const { categoryId } = useParams();
   const { t } = useTranslation();
   
-  const category = categories.find(c => c.slug === categoryId);
-  const categoryProducts = products.filter(p => p.categoryId === category?.id);
+  const [category, setCategory] = useState(null);
+  const [categoryProducts, setCategoryProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cat = await api.categories.getBySlug(categoryId);
+        if (cat) {
+          setCategory(cat);
+          const prods = await api.products.getAll({ categoryId: cat.id });
+          setCategoryProducts(prods);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [categoryId]);
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><span className="loading loading-spinner text-primary loading-lg"></span></div>;
 
   if (!category) {
     return <Navigate to="/" replace />;

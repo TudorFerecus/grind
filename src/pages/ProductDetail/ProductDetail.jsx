@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Settings2, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { products } from '../../data/products';
+import { api } from '../../api/client';
 import useStore from '../../store/useStore';
 
 const ProductDetail = () => {
@@ -12,8 +12,25 @@ const ProductDetail = () => {
   const { t } = useTranslation();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const product = products.find(p => p.id === productId);
+  useEffect(() => {
+    const fetchProd = async () => {
+      try {
+        const prod = await api.products.getById(productId);
+        setProduct(prod);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProd();
+  }, [productId]);
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><span className="loading loading-spinner text-primary loading-lg"></span></div>;
 
   if (!product) {
     return <Navigate to="/" replace />;

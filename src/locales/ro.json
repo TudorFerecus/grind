@@ -14,7 +14,15 @@
     "desc": "Aducem idei digitale în realitate materială folosind o fermă proprie de zeci de imprimante 3D calibrate la viteză și perfectă precizie.",
     "links": "Linkuri Utile",
     "contact": "Contact",
-    "allRights": "Toate drepturile rezervate."
+    "allRights": "Toate drepturile rezervate.",
+    "about": "Despre Noi",
+    "faq": "Întrebări Frecvente",
+    "shipping": "Livrare și Retur",
+    "terms": "Termeni și Condiții",
+    "newsletter": "Fii la curent",
+    "newsletterSub": "Abonează-te pentru a afla despre noile lansări și reduceri.",
+    "emailPlaceholder": "Adresa ta de email",
+    "subscribe": "Abonează-te"
   },
   "hero": {
     "title": "Printează 3D Ideile Tale",
@@ -92,7 +100,11 @@
     "delivery": "Livrare (estimat)",
     "totalEst": "Total estimat",
     "secureCheckout": "Plată 100% sigură. Finalizarea comenzii este simulată.",
-    "proceedCheckout": "Finalizează Comanda"
+    "proceedCheckout": "Finalizează Comanda",
+    "orderSuccess": "Comandă plasată cu succes!",
+    "orderSuccessSub": "Îți mulțumim pentru comandă. Te vom contacta în scurt timp pentru confirmare.",
+    "orderId": "ID Design",
+    "processProcessing": "Se procesează..."
   },
   "data": {
     "lampi": {
@@ -160,7 +172,32 @@
       "ridgeSharpness": "Claritate Striații",
       "spiralRidges": "Spirala Striațiilor",
       "title": "Sculptură Parametrică",
-      "desc": "Ajustează parametrii matematici pentru a genera lămpa."
+      "waistPos": "Poziție Talie",
+      "ripple": "Valuri Orizontale",
+      "rippleFreq": "Nr. Valuri",
+      "desc": "Ajustează parametrii matematici pentru a genera lămpa.",
+      "materialFinish": "Finisaj Material",
+      "frosted": "Frosted PETG (Difuz)",
+      "crystal": "Crystal Clear (Lucios)",
+      "profile": "Profil Lampă",
+      "texture": "Model Textură",
+      "density": "Densitate Pattern",
+      "smooth": "Fin (Smooth)",
+      "fluted": "Caneluri Linii (Fluted)",
+      "spiral": "Răsucire Spirală (Spiral Ribs)",
+      "organic": "Lichid Organic (Organic)",
+      "diamond": "Tăietură Diamant (Diamond Cut)",
+      "cylinder": "Cilindric",
+      "hourglass": "Clepsidră (Hourglass)",
+      "teardrop": "Lacrimă (Teardrop)",
+      "bulbProfile": "Bec Clasic (Bulb)",
+      "performanceMode": "Mod Performanță",
+      "performanceGPU": "Fluid (Optimizat GPU)",
+      "performanceHigh": "Ultra Calitate (High-Poly)",
+      "styleArchDesc": "Caneluri verticale, inspirate din design clasic",
+      "styleOrgDesc": "Forme fluide ca lavaş — asimetrice şi naturale",
+      "styleSpiDesc": "Textură răsucită dinamic care prinde lumina",
+      "styleDiaDesc": "Fațete geometrice, aspect cristalin"
     },
     "lithophane": {
       "sourceImage": "Imagine Sursă",
@@ -179,6 +216,38 @@
       "thickMin": "Grosime Min (zone luminoase) mm",
       "title": "Generator Litofanii",
       "desc": "Încarcă propria imagine și calculează volumul volumetric translucid 3D generat în browser."
+    },
+    "common": {
+      "loading": "Se încarcă...",
+      "error": "A apărut o eroare",
+      "success": "Succes!",
+      "save": "Salvează",
+      "cancel": "Anulează",
+      "delete": "Șterge",
+      "edit": "Editează"
+    },
+    "admin": {
+      "loginTitle": "Autentificare Admin",
+      "username": "Utilizator",
+      "password": "Parolă",
+      "loginButton": "Intră în cont",
+      "productsTitle": "Produse",
+      "ordersTitle": "Comenzi",
+      "addProduct": "Adaugă Produs",
+      "editProduct": "Editează Produs",
+      "deleteConfirm": "Ești sigur că vrei să ștergi acest produs?",
+      "statusInStock": "În Stoc",
+      "statusOutOfStock": "Indisponibil",
+      "statusCustomizable": "Configurabil 3D",
+      "productName": "Nume Produs",
+      "description": "Descriere",
+      "slug": "Slug (URL)",
+      "category": "Categorie",
+      "price": "Preț de bază (RON)",
+      "image": "Imagine Produs",
+      "logout": "Deconectare",
+      "status": "Status",
+      "actions": "Acțiuni"
     }
   }
 }

@@ -1,18 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '../../components/Hero/Hero';
 import CategoryCard from '../../components/CategoryCard/CategoryCard';
 import ProductCard from '../../components/ProductCard/ProductCard';
-import { categories } from '../../data/categories';
-import { products } from '../../data/products';
+import { api } from '../../api/client';
 import { Printer, Lightbulb, Palette, Award } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const Home = () => {
   const { t } = useTranslation();
-  // Get one featured product from each category to display on home page
-  const featuredProducts = categories.map(cat => 
-    products.find(p => p.categoryId === cat.id && !p.isCustomizable)
-  ).filter(Boolean);
+  const [categories, setCategories] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cats = await api.categories.getAll();
+        const prods = await api.products.getAll();
+        setCategories(cats);
+        // Get one featured product from each category
+        const featured = cats.map(cat => 
+          prods.find(p => p.categoryId === cat.id && !p.isCustomizable)
+        ).filter(Boolean);
+        setFeaturedProducts(featured);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">

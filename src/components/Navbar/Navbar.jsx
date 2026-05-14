@@ -20,6 +20,13 @@ const Navbar = () => {
     i18n.changeLanguage(newLang);
   };
 
+  const closeDropdowns = () => {
+    const elem = document.activeElement;
+    if (elem) {
+      elem?.blur();
+    }
+  };
+
   return (
     <nav className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-base-200 shadow-sm">
       <div className="navbar-start">
@@ -31,14 +38,14 @@ const Navbar = () => {
 
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 font-medium gap-1">
-          <li><Link to="/" className="hover:text-primary">{t('navbar.home')}</Link></li>
+          <li><Link to="/" className="hover:text-primary" onClick={closeDropdowns}>{t('navbar.home')}</Link></li>
           <li>
             <details className="dropdown">
               <summary className="hover:text-primary">{t('navbar.categories')}</summary>
               <ul className="p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200 z-50">
-                <li><Link to="/category/lampi-3d">{t('navbar.lamps3d')}</Link></li>
-                <li><Link to="/category/poze-litografice">{t('navbar.lithophanes')}</Link></li>
-                <li><Link to="/category/tablouri-fire">{t('navbar.stringArt')}</Link></li>
+                <li><Link to="/category/lampi-3d" onClick={closeDropdowns}>{t('navbar.lamps3d')}</Link></li>
+                <li><Link to="/category/poze-litografice" onClick={closeDropdowns}>{t('navbar.lithophanes')}</Link></li>
+                <li><Link to="/category/tablouri-fire" onClick={closeDropdowns}>{t('navbar.stringArt')}</Link></li>
               </ul>
             </details>
           </li>
@@ -46,8 +53,8 @@ const Navbar = () => {
             <details className="dropdown">
               <summary className="text-primary hover:text-primary-focus">{t('navbar.diyCustomizer')}</summary>
               <ul className="p-2 shadow-lg bg-base-100 rounded-box w-56 border border-base-200 z-50">
-                <li><Link to="/customizer/lamp">{t('navbar.sculptureLamps')}</Link></li>
-                <li><Link to="/customizer/lithophane">{t('navbar.litho3d')}</Link></li>
+                <li><Link to="/customizer/lamp" onClick={closeDropdowns}>{t('navbar.sculptureLamps')}</Link></li>
+                <li><Link to="/customizer/lithophane" onClick={closeDropdowns}>{t('navbar.litho3d')}</Link></li>
               </ul>
             </details>
           </li>
