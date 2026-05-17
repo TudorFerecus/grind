@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Cuboid, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useStore from '../../store/useStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const cartItemsCount = useStore(state => state.getCartItemsCount());
   const openCart = useStore(state => state.openCart);
+  const { user, isAuthenticated, logout } = useAuthStore();
 
   const { t, i18n } = useTranslation();
 
@@ -21,11 +23,29 @@ const Navbar = () => {
   };
 
   const closeDropdowns = () => {
+    const details = document.querySelectorAll('details.dropdown');
+    details.forEach(d => d.removeAttribute('open'));
     const elem = document.activeElement;
     if (elem) {
       elem?.blur();
     }
   };
+
+  React.useEffect(() => {
+    const handleOutsideClick = (event) => {
+      const details = document.querySelectorAll('details.dropdown');
+      details.forEach((d) => {
+        if (!d.contains(event.target)) {
+          d.removeAttribute('open');
+        }
+      });
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   return (
     <nav className="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-base-200 shadow-sm">
@@ -83,6 +103,51 @@ const Navbar = () => {
             )}
           </div>
         </button>
+
+        {/* User Account / Login Dropdown */}
+        {isAuthenticated ? (
+          <div className="dropdown dropdown-end ml-1">
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder hover:bg-base-200">
+              <div className="w-9 rounded-full border border-base-300">
+                {user?.avatarUrl ? (
+                  <img src={user.avatarUrl} alt={user.name} />
+                ) : (
+                  <span className="text-sm font-bold text-primary uppercase">
+                    {user?.name ? user.name.substring(0, 2) : 'US'}
+                  </span>
+                )}
+              </div>
+            </label>
+            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[60] p-3 shadow-xl bg-base-100 rounded-box w-56 border border-base-200 gap-1">
+              <li className="px-3 py-2 text-xs font-medium text-base-content/50 border-b border-base-200 pb-2 mb-1">
+                <span className="font-bold text-base-content block truncate text-sm">{user?.name}</span>
+                <span className="block truncate">{user?.email}</span>
+              </li>
+              <li>
+                <Link to="/orders" onClick={closeDropdowns} className="hover:text-primary">
+                  {t('auth.orders')}
+                </Link>
+              </li>
+              {user?.role === 'ADMIN' && (
+                <li>
+                  <Link to="/admin" onClick={closeDropdowns} className="text-secondary font-semibold hover:text-secondary-focus">
+                    {t('auth.adminDashboard')}
+                  </Link>
+                </li>
+              )}
+              <div className="divider my-1"></div>
+              <li>
+                <button onClick={() => { logout(); closeDropdowns(); }} className="text-error hover:bg-error/10">
+                  {t('auth.logout')}
+                </button>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <Link to="/login" className="btn btn-primary btn-sm sm:btn-md ml-1 font-semibold">
+            {t('auth.login')}
+          </Link>
+        )}
 
         {/* Mobile menu layout */}
         <div className="dropdown dropdown-end lg:hidden">

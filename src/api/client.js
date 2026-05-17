@@ -11,7 +11,7 @@ async function fetchApi(endpoint, options = {}) {
     ...options.headers,
   };
 
-  const token = localStorage.getItem('adminToken');
+  const token = localStorage.getItem('token') || localStorage.getItem('adminToken');
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -24,10 +24,22 @@ async function fetchApi(endpoint, options = {}) {
   const response = await fetch(url, { ...options, headers });
   
   // Handle 401 Unauthorized globally
-  if (response.status === 401) {
+  const isAuthRequest = 
+    endpoint.includes('/auth/login') || 
+    endpoint.includes('/auth/google') || 
+    endpoint.includes('/auth/register') ||
+    endpoint.includes('/auth/verify-email') ||
+    endpoint.includes('/auth/resend-verification');
+  if (response.status === 401 && !isAuthRequest) {
+    localStorage.removeItem('token');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('refreshToken');
     if (!window.location.pathname.includes('/login')) {
-      window.location.href = '/admin/login';
+      if (window.location.pathname.startsWith('/admin')) {
+        window.location.href = '/admin/login';
+      } else {
+        window.location.href = '/login';
+      }
     }
     throw new Error('session_expired');
   }
@@ -87,11 +99,32 @@ export const api = {
   },
 
   auth: {
-    login: (credentials) => fetchApi('/auth/admin/login', { 
+    register: (data) => fetchApi('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    login: (credentials) => fetchApi('/auth/login', { 
       method: 'POST', 
       body: JSON.stringify(credentials) 
     }),
-    verify: () => fetchApi('/auth/admin/verify'),
+    googleLogin: (token) => fetchApi('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    }),
+    refresh: (refreshToken) => fetchApi('/auth/refresh', {
+      method: 'POST',
+      body: JSON.stringify({ refreshToken })
+    }),
+    me: () => fetchApi('/auth/me'),
+    verify: () => fetchApi('/auth/me'), // reuse me endpoint for verification
+    verifyEmail: (token) => fetchApi('/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    }),
+    resendVerification: (email) => fetchApi('/auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    }),
   },
 
   uploads: {
