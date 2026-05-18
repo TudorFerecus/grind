@@ -42,7 +42,7 @@ const Category = () => {
       {/* Category Header */}
       <div 
         className="relative pt-32 pb-20 px-4 flex items-center justify-center bg-cover bg-center min-h-[350px]"
-        style={{ backgroundImage: `url(${category.image})` }}
+        style={{ backgroundImage: `url(${category.imageUrl || category.image})` }}
       >
         <div className="absolute inset-0 bg-neutral/70 backdrop-blur-sm"></div>
         <div className="container mx-auto px-4 max-w-7xl relative z-10 text-center text-primary-content">
@@ -50,8 +50,16 @@ const Category = () => {
             <ArrowLeft size={20} />
             {t('category.back')}
           </Link>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 drop-shadow-md">{category.name}</h1>
-          <p className="text-lg md:text-xl text-primary-content/90 max-w-2xl mx-auto">{t(`data.${category.id}.desc`)}</p>
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 drop-shadow-md">
+            {t(`data.${category.id}.name`) !== `data.${category.id}.name`
+              ? t(`data.${category.id}.name`)
+              : category.name}
+          </h1>
+          <p className="text-lg md:text-xl text-primary-content/90 max-w-2xl mx-auto">
+            {t(`data.${category.id}.desc`) !== `data.${category.id}.desc`
+              ? t(`data.${category.id}.desc`)
+              : category.description}
+          </p>
         </div>
       </div>
 

@@ -107,13 +107,16 @@
     "processProcessing": "Processing..."
   },
   "data": {
-    "lampi": {
+    "lampi-3d": {
+      "name": "3D Lamps",
       "desc": "Procedural 3D printed lamps built from translucent custom PLA."
     },
-    "lithophanes": {
+    "poze-litografice": {
+      "name": "Lithophanes",
       "desc": "Photographs brought to life sculpted in plastic. They glow depending on their thickness when backlit."
     },
-    "stringArt": {
+    "tablouri-fire": {
+      "name": "String Art",
       "desc": "Mathematics woven with craftsmanship. Circular frames crafted by a continuous thread stretched between pins."
     },
     "itemDiyLampa": {
@@ -216,39 +219,40 @@
       "thickMin": "Min Thickness (light) mm",
       "title": "Lithophane Generator",
       "desc": "Upload your image and calculate volumetric translucent 3D models live."
-    },
-    "common": {
-      "loading": "Loading...",
-      "error": "An error occurred",
-      "success": "Success!",
-      "save": "Save",
-      "cancel": "Cancel",
-      "delete": "Delete",
-      "edit": "Edit"
-    },
-    "admin": {
-      "loginTitle": "Admin Login",
-      "username": "Username",
-      "password": "Password",
-      "loginButton": "Login",
-      "productsTitle": "Products",
-      "ordersTitle": "Orders",
-      "addProduct": "Add Product",
-      "editProduct": "Edit Product",
-      "deleteConfirm": "Are you sure you want to delete this product?",
-      "statusInStock": "In Stock",
-      "statusOutOfStock": "Out of Stock",
-      "statusCustomizable": "3D Customizable",
-      "productName": "Product Name",
-      "description": "Description",
-      "slug": "Slug (URL)",
-      "category": "Category",
-      "price": "Base Price (RON)",
-      "image": "Product Image",
-      "logout": "Logout",
-      "status": "Status",
-      "actions": "Actions"
     }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "admin": {
+    "loginTitle": "Admin Login",
+    "username": "Username",
+    "password": "Password",
+    "loginButton": "Login",
+    "productsTitle": "Products",
+    "ordersTitle": "Orders",
+    "usersTitle": "Users",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "statusInStock": "In Stock",
+    "statusOutOfStock": "Out of Stock",
+    "statusCustomizable": "3D Customizable",
+    "productName": "Product Name",
+    "description": "Description",
+    "slug": "Slug (URL)",
+    "category": "Category",
+    "price": "Base Price (RON)",
+    "image": "Product Image",
+    "logout": "Logout",
+    "status": "Status",
+    "actions": "Actions"
   },
   "auth": {
     "login": "Login",

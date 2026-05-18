@@ -107,13 +107,16 @@
     "processProcessing": "Se procesează..."
   },
   "data": {
-    "lampi": {
+    "lampi-3d": {
+      "name": "Lămpi 3D",
       "desc": "Lămpi printate 3D procedural din filament translucid și PLA cu suport integrat de bec."
     },
-    "lithophanes": {
+    "poze-litografice": {
+      "name": "Poze Litografice",
       "desc": "Fotografii prind viață sculptate în plastic. Strălucesc în funcție de grosimea lor atunci când ai o lumină în spate."
     },
-    "stringArt": {
+    "tablouri-fire": {
+      "name": "Tablouri cu Fire",
       "desc": "Matematică împletită cu meșteșug. Tablouri circulare pe care curge doar o singură ață continuă așternută între cuie."
     },
     "itemDiyLampa": {
@@ -216,39 +219,40 @@
       "thickMin": "Grosime Min (zone luminoase) mm",
       "title": "Generator Litofanii",
       "desc": "Încarcă propria imagine și calculează volumul volumetric translucid 3D generat în browser."
-    },
-    "common": {
-      "loading": "Se încarcă...",
-      "error": "A apărut o eroare",
-      "success": "Succes!",
-      "save": "Salvează",
-      "cancel": "Anulează",
-      "delete": "Șterge",
-      "edit": "Editează"
-    },
-    "admin": {
-      "loginTitle": "Autentificare Admin",
-      "username": "Utilizator",
-      "password": "Parolă",
-      "loginButton": "Intră în cont",
-      "productsTitle": "Produse",
-      "ordersTitle": "Comenzi",
-      "addProduct": "Adaugă Produs",
-      "editProduct": "Editează Produs",
-      "deleteConfirm": "Ești sigur că vrei să ștergi acest produs?",
-      "statusInStock": "În Stoc",
-      "statusOutOfStock": "Indisponibil",
-      "statusCustomizable": "Configurabil 3D",
-      "productName": "Nume Produs",
-      "description": "Descriere",
-      "slug": "Slug (URL)",
-      "category": "Categorie",
-      "price": "Preț de bază (RON)",
-      "image": "Imagine Produs",
-      "logout": "Deconectare",
-      "status": "Status",
-      "actions": "Acțiuni"
     }
+  },
+  "common": {
+    "loading": "Se încarcă...",
+    "error": "A apărut o eroare",
+    "success": "Succes!",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "delete": "Șterge",
+    "edit": "Editează"
+  },
+  "admin": {
+    "loginTitle": "Autentificare Admin",
+    "username": "Utilizator",
+    "password": "Parolă",
+    "loginButton": "Intră în cont",
+    "productsTitle": "Produse",
+    "ordersTitle": "Comenzi",
+    "usersTitle": "Utilizatori",
+    "addProduct": "Adaugă Produs",
+    "editProduct": "Editează Produs",
+    "deleteConfirm": "Ești sigur că vrei să ștergi acest produs?",
+    "statusInStock": "În Stoc",
+    "statusOutOfStock": "Indisponibil",
+    "statusCustomizable": "Configurabil 3D",
+    "productName": "Nume Produs",
+    "description": "Descriere",
+    "slug": "Slug (URL)",
+    "category": "Categorie",
+    "price": "Preț de bază (RON)",
+    "image": "Imagine Produs",
+    "logout": "Deconectare",
+    "status": "Status",
+    "actions": "Acțiuni"
   },
   "auth": {
     "login": "Autentificare",

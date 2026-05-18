@@ -66,7 +66,7 @@ const ProductDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <div className="sticky top-24">
           <div className="relative rounded-2xl overflow-hidden shadow-lg border border-base-200 bg-base-200">
-            <img src={product.image} alt={t(`data.${product.id}.name`)} className="w-full h-auto object-cover" />
+            <img src={product.imageUrl || product.image} alt={product.name} className="w-full h-auto object-cover" />
             {product.isCustomizable && (
               <div className="absolute top-4 right-4 bg-primary text-primary-content font-bold px-3 py-1 rounded-full text-sm shadow-md">
                 {t('product.diyAvailable')}
@@ -76,11 +76,11 @@ const ProductDetail = () => {
         </div>
 
         <div className="flex flex-col">
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-base-content mb-2">{t(`data.${product.id}.name`)}</h1>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-base-content mb-2">{product.name}</h1>
           <p className="text-2xl text-primary font-semibold mb-6">{product.price} RON</p>
           
           <div className="prose prose-base-content mb-8">
-            <p className="text-lg text-base-content/80 leading-relaxed">{t(`data.${product.id}.desc`)}</p>
+            <p className="text-lg text-base-content/80 leading-relaxed">{product.description}</p>
           </div>
 
           <div className="bg-base-200 p-6 rounded-xl border border-base-300 mb-8">

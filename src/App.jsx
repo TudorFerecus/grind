@@ -12,6 +12,7 @@ import Cart from './pages/Cart/Cart';
 import AdminLayout from './components/AdminLayout/AdminLayout';
 import AdminLogin from './pages/Admin/AdminLogin';
 import AdminProducts from './pages/Admin/AdminProducts';
+import AdminUsers from './pages/Admin/AdminUsers';
 
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -58,6 +59,7 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminProducts />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
         </Routes>
       </main>

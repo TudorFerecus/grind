@@ -1,12 +1,14 @@
 import React from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
-import { Package, ShoppingBag, LogOut } from 'lucide-react';
+import { Package, ShoppingBag, LogOut, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const AdminLayout = () => {
   const { t } = useTranslation();
   const token = localStorage.getItem('adminToken');
   const location = useLocation();
+  const user = useAuthStore((state) => state.user);
 
   if (!token) {
     return <Navigate to="/admin/login" replace />;
@@ -38,6 +40,16 @@ const AdminLayout = () => {
             <ShoppingBag size={20} />
             {t('admin.ordersTitle')}
           </Link>
+          
+          {user?.role === 'ADMIN' && (
+            <Link 
+              to="/admin/users" 
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${location.pathname.includes('/users') ? 'bg-primary text-primary-content font-semibold shadow-md' : 'hover:bg-base-200 text-base-content/70'}`}
+            >
+              <Users size={20} />
+              {t('admin.usersTitle') || 'Users'}
+            </Link>
+          )}
         </nav>
         <div className="p-4 border-t border-base-200">
           <button 

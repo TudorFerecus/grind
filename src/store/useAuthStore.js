@@ -15,7 +15,7 @@ export const useAuthStore = create((set, get) => ({
       localStorage.setItem('refreshToken', refreshToken);
     }
     // Sync with adminToken for backward compatibility
-    if (user?.role === 'ADMIN') {
+    if (user?.role === 'ADMIN' || user?.role === 'EDITOR') {
       localStorage.setItem('adminToken', token);
     }
     set({
@@ -121,7 +121,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const user = await api.auth.me();
       set({ user, isAuthenticated: true });
-      if (user.role === 'ADMIN') {
+      if (user.role === 'ADMIN' || user.role === 'EDITOR') {
         localStorage.setItem('adminToken', token);
       }
       return user;

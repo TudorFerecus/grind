@@ -45,7 +45,7 @@ const CartDrawer = () => {
             <ul className="space-y-4">
               {cart.map((item) => (
                 <li key={item.id} className="flex gap-4 p-4 bg-base-100 rounded-2xl border border-base-200 shadow-sm relative group">
-                  <img src={item.product.image} alt={item.product.name} className="w-20 h-20 object-cover rounded-xl bg-base-200" />
+                  <img src={item.product.imageUrl || item.product.image} alt={item.product.name} className="w-20 h-20 object-cover rounded-xl bg-base-200" />
                   
                   <div className="flex-1 flex flex-col justify-between">
                     <div>

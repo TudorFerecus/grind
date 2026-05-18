@@ -125,6 +125,11 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email })
     }),
+    getAllUsers: () => fetchApi('/auth/users'),
+    updateUserRole: (id, role) => fetchApi(`/auth/users/${id}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role })
+    }),
   },
 
   uploads: {

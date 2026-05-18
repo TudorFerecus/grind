@@ -89,7 +89,7 @@ const Cart = () => {
         <div className="w-full lg:w-2/3 flex flex-col gap-4">
           {cart.map((item) => (
             <div key={item.id} className="flex flex-col sm:flex-row bg-base-100 p-4 rounded-2xl shadow-sm border border-base-200 gap-4 relative items-start sm:items-center">
-              <img src={item.product.image.startsWith('http') ? item.product.image : `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}${item.product.image}`} alt={item.product.name} className="w-full sm:w-24 h-24 object-cover rounded-xl bg-base-200" />
+              <img src={(item.product.imageUrl || item.product.image || '').startsWith('http') ? (item.product.imageUrl || item.product.image) : `${import.meta.env.VITE_API_URL || 'http://localhost:3001'}${item.product.imageUrl || item.product.image}`} alt={item.product.name} className="w-full sm:w-24 h-24 object-cover rounded-xl bg-base-200" />
               
               <div className="flex-1">
                 <Link to={`/product/${item.product.id}`} className="text-lg font-bold hover:text-primary transition-colors text-base-content block mb-1">
